@@ -13,6 +13,7 @@ fastapi
 uvicorn
 python-multipart
 xgboost
+<<<<<<< HEAD
 deep-translator
 snscrape
 python-dotenv 
@@ -44,3 +45,6 @@ isort
 
 # Monitoring
 prometheus-client
+=======
+dotenv
+>>>>>>> 03a5b26 (Add dotenv to requirements for environment variable management)
