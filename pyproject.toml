@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cti-nlp-system"
+version = "1.0.0"
+description = "AI-Powered Cyber Threat Intelligence System using NLP"
+authors = [
+    {name = "CTI-NLP Team", email = "team@cti-nlp.com"}
+]
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "sqlalchemy",
+    "psycopg2-binary",
+    "redis",
+    "transformers",
+    "scikit-learn",
+    "pandas",
+    "pytest",
+]
+
+[tool.black]
+line-length = 100
+target-version = ["py39"]
+
+[tool.isort]
+profile = "black"
+line_length = 100
