@@ -187,7 +187,22 @@ async def analyze_text(payload: dict, db: Session = Depends(get_db_session)):
         threat_type = classify_threat(text)
         severity = predict_severity(text)
 
-        # Store in database
+        # Check if we're in test mode (no database)
+        test_mode = os.getenv("TEST_MODE", "false").lower() == "true"
+        
+        if test_mode:
+            # Return results without database storage for testing
+            return {
+                "id": "test-mode-id",
+                "original_text": text,
+                "entities": entities,
+                "threat_type": str(threat_type),
+                "severity": str(severity),
+                "timestamp": datetime.utcnow().isoformat(),
+                "test_mode": True
+            }
+
+        # Store in database (production mode)
         threat_intel_service = ThreatIntelService(db)
         
         # Create threat intelligence record
