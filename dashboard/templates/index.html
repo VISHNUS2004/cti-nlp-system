@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>CTI-NLP Dashboard</title>
+    <title>CTI-NLP Intelligence Dashboard</title>
 
     <!-- Bootstrap CSS -->
     <link
@@ -11,513 +11,1952 @@
       rel="stylesheet"
     />
 
+    <!-- Bootstrap Icons -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
       :root {
-        --brand: #0d6efd;
+        --brand-primary: #0056b3;
+        --brand-secondary: #dc3545;
+        --brand-success: #198754;
+        --brand-warning: #fd7e14;
+        --brand-info: #0dcaf0;
         --muted: #6c757d;
-        --page-bg: #f6f8fb;
+        --page-bg: #f8f9fa;
+        --sidebar-bg: #ffffff;
+        --card-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        --card-shadow-hover: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
       }
+
       body {
         background: var(--page-bg);
-        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto,
-          "Helvetica Neue", Arial;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 0.9rem;
       }
-      .app-header {
-        background: linear-gradient(90deg, #0d6efd 0%, #4da8ff 100%);
-        color: #fff;
-        padding: 18px 24px;
-        border-radius: 8px;
-        margin-bottom: 18px;
-      }
-      .app-title {
+
+      .navbar-brand {
         font-weight: 700;
-        margin: 0;
-        font-size: 1.25rem;
+        font-size: 1.2rem;
       }
+
+      .navbar {
+        background: linear-gradient(
+          135deg,
+          var(--brand-primary) 0%,
+          #007bff 100%
+        );
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .main-content {
+        padding: 1rem;
+      }
+
       .card {
         border: none;
-        box-shadow: 0 6px 18px rgba(32, 40, 60, 0.06);
+        box-shadow: var(--card-shadow);
+        transition: all 0.3s ease;
+        margin-bottom: 1rem;
       }
-      .small-muted {
+
+      .card:hover {
+        box-shadow: var(--card-shadow-hover);
+        transform: translateY(-2px);
+      }
+
+      .stat-card {
+        text-align: center;
+        padding: 1.5rem 1rem;
+      }
+
+      .stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+      }
+
+      .stat-label {
         color: var(--muted);
-        font-size: 0.9rem;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
       }
-      pre {
-        white-space: pre-wrap;
-        word-break: break-word;
-        font-size: 0.9rem;
-        background: #f8f9fb;
-        padding: 12px;
-        border-radius: 6px;
+
+      .severity-badge {
+        padding: 0.35rem 0.75rem;
+        border-radius: 0.375rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
       }
+
+      .severity-critical {
+        background: #dc3545;
+        color: white;
+      }
+      .severity-high {
+        background: #fd7e14;
+        color: white;
+      }
+      .severity-medium {
+        background: #ffc107;
+        color: #000;
+      }
+      .severity-low {
+        background: #198754;
+        color: white;
+      }
+
+      .threat-type-badge {
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-size: 0.7rem;
+        font-weight: 500;
+      }
+
+      .btn-analyze {
+        background: linear-gradient(
+          135deg,
+          var(--brand-success) 0%,
+          #20c997 100%
+        );
+        border: none;
+        font-weight: 600;
+      }
+
+      .btn-analyze:hover {
+        background: linear-gradient(135deg, #157347 0%, #0f6674 100%);
+      }
+
+      .analysis-result {
+        background: #f8f9fa;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        margin-top: 1rem;
+        border-left: 4px solid var(--brand-success);
+      }
+
+      .threat-item {
+        padding: 1rem;
+        border-bottom: 1px solid #dee2e6;
+        transition: background-color 0.2s ease;
+      }
+
+      .threat-item:hover {
+        background-color: #f8f9fa;
+      }
+
+      .threat-item:last-child {
+        border-bottom: none;
+      }
+
+      .status-indicator {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 0.5rem;
+      }
+
+      .status-healthy {
+        background: #198754;
+      }
+      .status-warning {
+        background: #ffc107;
+      }
+      .status-error {
+        background: #dc3545;
+      }
+
       .spinner-inline {
         width: 1rem;
         height: 1rem;
-        border-width: 0.16rem;
+        border-width: 0.15rem;
       }
-      @media (min-width: 992px) {
-        .grid-2 {
-          display: grid;
-          grid-template-columns: 1fr 420px;
-          gap: 20px;
+
+      .chart-container {
+        position: relative;
+        height: 300px;
+        margin: 1rem 0;
+      }
+
+      .nav-tabs .nav-link {
+        border: none;
+        border-radius: 0.5rem 0.5rem 0 0;
+        font-weight: 500;
+      }
+
+      .nav-tabs .nav-link.active {
+        background: var(--brand-primary);
+        color: white;
+      }
+
+      .table-responsive {
+        border-radius: 0.5rem;
+        overflow: hidden;
+      }
+
+      .entity-tag {
+        background: #e3f2fd;
+        color: #1976d2;
+        padding: 0.2rem 0.5rem;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+        margin: 0.1rem;
+        display: inline-block;
+      }
+
+      .timeline-item {
+        position: relative;
+        padding-left: 2rem;
+        padding-bottom: 1rem;
+      }
+
+      .timeline-item::before {
+        content: "";
+        position: absolute;
+        left: 0.5rem;
+        top: 0.5rem;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--brand-primary);
+      }
+
+      .timeline-item::after {
+        content: "";
+        position: absolute;
+        left: 0.75rem;
+        top: 1rem;
+        width: 2px;
+        height: calc(100% - 0.5rem);
+        background: #dee2e6;
+      }
+
+      .timeline-item:last-child::after {
+        display: none;
+      }
+
+      @media (max-width: 768px) {
+        .main-content {
+          padding: 0.5rem;
+        }
+
+        .stat-card {
+          padding: 1rem 0.5rem;
+        }
+
+        .stat-number {
+          font-size: 1.5rem;
         }
       }
     </style>
   </head>
   <body>
-    <div class="container py-4">
-      <!-- Header -->
-      <div class="app-header d-flex justify-content-between align-items-center">
-        <div>
-          <h1 class="app-title">AI-Based Predictive CTI — Dashboard</h1>
-          <p class="mb-0" style="opacity: 0.95">
-            Analyze threats, run ingestion, upload batches & monitor status
-          </p>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+          <i class="bi bi-shield-exclamation me-2"></i>
+          CTI-NLP Intelligence Platform
+        </a>
+        <div class="navbar-nav ms-auto">
+          <span class="navbar-text me-3">
+            <span class="status-indicator status-healthy"></span>
+            <span id="systemStatus">System Operational</span>
+          </span>
+          <span class="navbar-text">
+            <i class="bi bi-clock me-1"></i>
+            <span id="currentTime"></span>
+          </span>
         </div>
-        <div class="text-end small-muted">
-          <div>Team: CSE (AI & ML), ATMECE Mysuru</div>
-          <div style="font-size: 0.85rem">
-            Environment: <span id="envLabel">local</span>
+      </div>
+    </nav>
+
+    <div class="container-fluid main-content">
+      <!-- System Status Banner -->
+      <div id="systemStatusBanner" class="alert alert-dismissible fade show" style="display: none;" role="alert">
+        <div class="d-flex align-items-center">
+          <i id="bannerIcon" class="bi bi-exclamation-triangle-fill me-2"></i>
+          <div class="flex-grow-1">
+            <strong id="bannerTitle">System Notice</strong>
+            <div id="bannerMessage" class="small">System message</div>
+          </div>
+          <button type="button" class="btn-close" onclick="dismissBanner()"></button>
+        </div>
+        <div class="mt-2" id="bannerActions" style="display: none;">
+          <button class="btn btn-sm btn-primary me-2" onclick="enableTestMode()">
+            <i class="bi bi-flask me-1"></i>Switch to Test Mode
+          </button>
+          <button class="btn btn-sm btn-outline-secondary" onclick="retryConnection()">
+            <i class="bi bi-arrow-clockwise me-1"></i>Retry Connection
+          </button>
+        </div>
+      </div>
+
+      <!-- Dashboard Stats -->
+      <div class="row mb-4">
+        <div class="col-md-3">
+          <div class="card stat-card">
+            <div class="stat-number text-primary" id="totalThreats">0</div>
+            <div class="stat-label">Total Threats</div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card stat-card">
+            <div class="stat-number text-danger" id="criticalThreats">0</div>
+            <div class="stat-label">Critical Alerts</div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card stat-card">
+            <div class="stat-number text-warning" id="todayThreats">0</div>
+            <div class="stat-label">Today's Threats</div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card stat-card">
+            <div class="stat-number text-success" id="sourcesActive">3</div>
+            <div class="stat-label">Active Sources</div>
           </div>
         </div>
       </div>
 
-      <!-- Top summary -->
-      <div class="row g-3 mb-3">
-        <div class="col-md-4">
-          <div class="card p-3">
-            <div class="d-flex justify-content-between align-items-center">
-              <div>
-                <div class="small-muted">Ingestion last run</div>
-                <div id="lastRun" class="fw-semibold">—</div>
-              </div>
-              <button
-                id="btnRunIngest"
-                class="btn btn-outline-primary btn-sm"
-                onclick="runIngestionNow()"
-              >
-                <span id="btnRunIngestLabel">Run Ingestion Now</span>
-                <div
-                  id="ingestSpinner"
-                  class="spinner-border spinner-inline text-primary ms-2"
-                  style="display: none"
-                ></div>
-              </button>
-            </div>
-            <hr />
-            <div class="d-flex gap-3">
-              <div>
-                <div class="small-muted">Darkweb</div>
-                <div id="countDark" class="fw-bold">0</div>
-              </div>
-              <div>
-                <div class="small-muted">Twitter</div>
-                <div id="countTwitter" class="fw-bold">0</div>
-              </div>
-              <div>
-                <div class="small-muted">MITRE</div>
-                <div id="countMitre" class="fw-bold">0</div>
-              </div>
-              <div>
-                <div class="small-muted">Total</div>
-                <div id="countTotal" class="fw-bold">0</div>
-              </div>
-            </div>
-          </div>
-        </div>
+      <!-- Main Dashboard Tabs -->
+      <ul class="nav nav-tabs mb-3" id="dashboardTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="overview-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#overview"
+            type="button"
+            role="tab"
+          >
+            <i class="bi bi-speedometer2 me-2"></i>Overview
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="analyze-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#analyze"
+            type="button"
+            role="tab"
+          >
+            <i class="bi bi-search me-2"></i>Analyze
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="threats-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#threats"
+            type="button"
+            role="tab"
+          >
+            <i class="bi bi-list-ul me-2"></i>Threat Intel
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="analytics-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#analytics"
+            type="button"
+            role="tab"
+          >
+            <i class="bi bi-graph-up me-2"></i>Analytics
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="ingestion-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#ingestion"
+            type="button"
+            role="tab"
+          >
+            <i class="bi bi-cloud-download me-2"></i>Data Sources
+          </button>
+        </li>
+      </ul>
 
-        <div class="col-md-4">
-          <div class="card p-3">
-            <div class="small-muted">Service health</div>
-            <div class="d-flex align-items-center">
-              <div
-                id="serverStatusDot"
-                style="
-                  width: 12px;
-                  height: 12px;
-                  border-radius: 50%;
-                  background: #28a745;
-                  margin-right: 10px;
-                "
-              ></div>
-              <div>
-                <div id="serverStatusText" class="fw-semibold">Running</div>
-                <div class="small-muted" id="serverStatusDetail">
-                  Uvicorn / FastAPI
+      <!-- Tab Content -->
+      <div class="tab-content" id="dashboardTabsContent">
+        <!-- Overview Tab -->
+        <div class="tab-pane fade show active" id="overview" role="tabpanel">
+          <div class="row">
+            <!-- Real-time Threat Feed -->
+            <div class="col-lg-8">
+              <div class="card">
+                <div
+                  class="card-header d-flex justify-content-between align-items-center"
+                >
+                  <h5 class="card-title mb-0">
+                    <i class="bi bi-activity me-2"></i>Real-time Threat Feed
+                  </h5>
+                  <button
+                    class="btn btn-sm btn-outline-primary"
+                    onclick="refreshThreatFeed()"
+                  >
+                    <i class="bi bi-arrow-clockwise"></i>
+                  </button>
+                </div>
+                <div class="card-body p-0">
+                  <div id="threatFeed" class="threat-feed">
+                    <div class="text-center p-4">
+                      <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-            <hr />
-            <div class="small-muted">Model status</div>
-            <div id="modelStatus" class="fw-semibold">Loading models...</div>
+
+            <!-- System Health & Quick Actions -->
+            <div class="col-lg-4">
+              <!-- System Health -->
+              <div class="card mb-3">
+                <div class="card-header">
+                  <h5 class="card-title mb-0">
+                    <i class="bi bi-heart-pulse me-2"></i>System Health
+                  </h5>
+                </div>
+                <div class="card-body">
+                  <div
+                    class="d-flex justify-content-between align-items-center mb-2"
+                  >
+                    <span>API Server</span>
+                    <span class="badge bg-success" id="apiStatus">Online</span>
+                  </div>
+                  <div
+                    class="d-flex justify-content-between align-items-center mb-2"
+                  >
+                    <span>Database</span>
+                    <span class="badge bg-success" id="dbStatus"
+                      >Connected</span
+                    >
+                  </div>
+                  <div
+                    class="d-flex justify-content-between align-items-center mb-2"
+                  >
+                    <span>Redis Cache</span>
+                    <span class="badge bg-success" id="redisStatus"
+                      >Active</span
+                    >
+                  </div>
+                  <div
+                    class="d-flex justify-content-between align-items-center"
+                  >
+                    <span>ML Models</span>
+                    <span class="badge bg-success" id="modelStatus"
+                      >Loaded</span
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <!-- Quick Actions -->
+              <div class="card">
+                <div class="card-header">
+                  <h5 class="card-title mb-0">
+                    <i class="bi bi-lightning me-2"></i>Quick Actions
+                  </h5>
+                </div>
+                <div class="card-body d-grid gap-2">
+                  <button class="btn btn-primary" onclick="showAnalyzeTab()">
+                    <i class="bi bi-search me-2"></i>Analyze Threat
+                  </button>
+                  <button
+                    class="btn btn-outline-success"
+                    onclick="triggerIngestion()"
+                  >
+                    <i class="bi bi-cloud-download me-2"></i>Run Ingestion
+                    <span
+                      id="ingestionSpinner"
+                      class="spinner-border spinner-inline ms-2"
+                      style="display: none"
+                    ></span>
+                  </button>
+                  <button
+                    class="btn btn-outline-info"
+                    onclick="showThreatsTab()"
+                  >
+                    <i class="bi bi-list me-2"></i>View All Threats
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="col-md-4">
-          <div class="card p-3">
-            <div class="small-muted">Quick actions</div>
-            <div class="mt-2 d-flex flex-column gap-2">
-              <button
-                class="btn btn-success btn-sm"
-                onclick="document.getElementById('analyzeTextArea').scrollIntoView({behavior:'smooth'})"
-              >
-                Analyze a text
-              </button>
-              <button
-                class="btn btn-outline-secondary btn-sm"
-                onclick="document.getElementById('csvFile').scrollIntoView({behavior:'smooth'})"
-              >
-                Upload CSV
-              </button>
-              <button
-                class="btn btn-outline-info btn-sm"
-                onclick="refreshStatus()"
-              >
-                Refresh status
-              </button>
+        <!-- Analyze Tab -->
+        <div class="tab-pane fade" id="analyze" role="tabpanel">
+          <div class="row">
+            <div class="col-lg-8">
+              <!-- Single Text Analysis -->
+              <div class="card mb-4">
+                <div class="card-header">
+                  <h5 class="card-title mb-0">
+                    <i class="bi bi-textarea-t me-2"></i>Single Threat Analysis
+                  </h5>
+                </div>
+                <div class="card-body">
+                  <div class="mb-3">
+                    <label for="analyzeText" class="form-label"
+                      >Threat Intelligence Text</label
+                    >
+                    <textarea
+                      id="analyzeText"
+                      class="form-control"
+                      rows="6"
+                      placeholder="Enter or paste threat intelligence text here... (e.g., 'APT29 group launching sophisticated phishing attacks against government agencies using fake Microsoft Office 365 login pages')"
+                    ></textarea>
+                  </div>
+                  <div class="d-flex gap-2 align-items-center">
+                    <button
+                      class="btn btn-analyze"
+                      onclick="analyzeThreatText()"
+                    >
+                      <i class="bi bi-cpu me-2"></i>Analyze Threat
+                    </button>
+                    <button
+                      class="btn btn-outline-secondary"
+                      onclick="clearAnalysisForm()"
+                    >
+                      <i class="bi bi-x-circle me-2"></i>Clear
+                    </button>
+                    <button
+                      class="btn btn-outline-info"
+                      onclick="loadSampleText()"
+                    >
+                      <i class="bi bi-file-text me-2"></i>Load Sample
+                    </button>
+                    <div
+                      id="analyzeSpinner"
+                      class="spinner-border spinner-inline text-primary"
+                      style="display: none"
+                    ></div>
+                  </div>
+
+                  <!-- Analysis Results -->
+                  <div
+                    id="analysisResults"
+                    class="analysis-result"
+                    style="display: none"
+                  >
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="mb-3">
+                          <label class="form-label fw-bold">Threat Type</label>
+                          <div
+                            id="resultThreatType"
+                            class="threat-type-badge bg-primary text-white"
+                          >
+                            -
+                          </div>
+                        </div>
+                        <div class="mb-3">
+                          <label class="form-label fw-bold"
+                            >Severity Level</label
+                          >
+                          <div id="resultSeverity" class="severity-badge">
+                            -
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="mb-3">
+                          <label class="form-label fw-bold"
+                            >Confidence Score</label
+                          >
+                          <div class="progress" style="height: 20px">
+                            <div
+                              id="confidenceBar"
+                              class="progress-bar"
+                              role="progressbar"
+                              style="width: 0%"
+                            >
+                              0%
+                            </div>
+                          </div>
+                        </div>
+                        <div class="mb-3">
+                          <label class="form-label fw-bold"
+                            >Processing Time</label
+                          >
+                          <div id="processingTime" class="text-muted">- ms</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label fw-bold"
+                        >Extracted Entities</label
+                      >
+                      <div id="extractedEntities" class="entity-container">
+                        <span class="text-muted">No entities detected</span>
+                      </div>
+                    </div>
+
+                    <div class="d-flex gap-2 justify-content-end">
+                      <button
+                        class="btn btn-sm btn-outline-secondary"
+                        onclick="copyAnalysisResults()"
+                      >
+                        <i class="bi bi-clipboard me-1"></i>Copy
+                      </button>
+                      <button
+                        class="btn btn-sm btn-success"
+                        onclick="downloadAnalysisResults()"
+                      >
+                        <i class="bi bi-download me-1"></i>Download JSON
+                      </button>
+                      <button
+                        class="btn btn-sm btn-primary"
+                        onclick="saveToDatabase()"
+                      >
+                        <i class="bi bi-save me-1"></i>Save to Database
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Batch Upload -->
+              <div class="card">
+                <div class="card-header">
+                  <h5 class="card-title mb-0">
+                    <i class="bi bi-file-earmark-spreadsheet me-2"></i>Batch
+                    Analysis (CSV Upload)
+                  </h5>
+                </div>
+                <div class="card-body">
+                  <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>
+                    <strong>CSV Format:</strong> Your file must contain a column
+                    named <code>text</code> with threat intelligence
+                    descriptions.
+                  </div>
+                  <div class="mb-3">
+                    <label for="csvUpload" class="form-label"
+                      >Choose CSV File</label
+                    >
+                    <input
+                      type="file"
+                      class="form-control"
+                      id="csvUpload"
+                      accept=".csv"
+                    />
+                  </div>
+                  <div class="d-flex gap-2 align-items-center">
+                    <button class="btn btn-primary" onclick="uploadCsvFile()">
+                      <i class="bi bi-cloud-upload me-2"></i>Upload & Analyze
+                    </button>
+                    <button
+                      class="btn btn-outline-info"
+                      onclick="downloadSampleCsv()"
+                    >
+                      <i class="bi bi-download me-2"></i>Download Sample
+                    </button>
+                    <div
+                      id="uploadSpinner"
+                      class="spinner-border spinner-inline text-primary"
+                      style="display: none"
+                    ></div>
+                  </div>
+                  <div id="uploadStatus" class="mt-2"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Analysis History -->
+            <div class="col-lg-4">
+              <div class="card">
+                <div
+                  class="card-header d-flex justify-content-between align-items-center"
+                >
+                  <h5 class="card-title mb-0">
+                    <i class="bi bi-clock-history me-2"></i>Recent Analyses
+                  </h5>
+                  <button
+                    class="btn btn-sm btn-outline-primary"
+                    onclick="refreshAnalysisHistory()"
+                  >
+                    <i class="bi bi-arrow-clockwise"></i>
+                  </button>
+                </div>
+                <div
+                  class="card-body p-0"
+                  style="max-height: 500px; overflow-y: auto"
+                >
+                  <div id="analysisHistory">
+                    <div class="text-center p-4">
+                      <span class="text-muted">No recent analyses</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Threats Tab -->
+        <div class="tab-pane fade" id="threats" role="tabpanel">
+          <div class="row">
+            <div class="col-12">
+              <div class="card">
+                <div
+                  class="card-header d-flex justify-content-between align-items-center"
+                >
+                  <h5 class="card-title mb-0">
+                    <i class="bi bi-shield-exclamation me-2"></i>Threat
+                    Intelligence Database
+                  </h5>
+                  <div class="d-flex gap-2">
+                    <select
+                      class="form-select form-select-sm"
+                      id="threatTypeFilter"
+                      onchange="filterThreats()"
+                    >
+                      <option value="">All Types</option>
+                      <option value="Phishing">Phishing</option>
+                      <option value="Malware">Malware</option>
+                      <option value="Ransomware">Ransomware</option>
+                      <option value="APT">APT</option>
+                      <option value="DDoS">DDoS</option>
+                      <option value="Data Breach">Data Breach</option>
+                    </select>
+                    <select
+                      class="form-select form-select-sm"
+                      id="severityFilter"
+                      onchange="filterThreats()"
+                    >
+                      <option value="">All Severities</option>
+                      <option value="Critical">Critical</option>
+                      <option value="High">High</option>
+                      <option value="Medium">Medium</option>
+                      <option value="Low">Low</option>
+                    </select>
+                    <button
+                      class="btn btn-sm btn-outline-primary"
+                      onclick="refreshThreats()"
+                    >
+                      <i class="bi bi-arrow-clockwise me-1"></i>Refresh
+                    </button>
+                  </div>
+                </div>
+                <div class="card-body p-0">
+                  <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                      <thead class="table-light">
+                        <tr>
+                          <th>ID</th>
+                          <th>Source</th>
+                          <th>Threat Type</th>
+                          <th>Severity</th>
+                          <th>Description</th>
+                          <th>Created</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody id="threatsTableBody">
+                        <tr>
+                          <td colspan="7" class="text-center p-4">
+                            <div class="spinner-border" role="status">
+                              <span class="visually-hidden"
+                                >Loading threats...</span
+                              >
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div
+                    class="card-footer d-flex justify-content-between align-items-center"
+                  >
+                    <div>
+                      <span id="threatsCount" class="text-muted"
+                        >Loading...</span
+                      >
+                    </div>
+                    <nav>
+                      <ul
+                        class="pagination pagination-sm mb-0"
+                        id="threatsPagination"
+                      >
+                        <!-- Pagination will be generated here -->
+                      </ul>
+                    </nav>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Analytics Tab -->
+        <div class="tab-pane fade" id="analytics" role="tabpanel">
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="card">
+                <div class="card-header">
+                  <h5 class="card-title mb-0">
+                    <i class="bi bi-pie-chart me-2"></i>Threat Distribution
+                  </h5>
+                </div>
+                <div class="card-body">
+                  <div class="chart-container">
+                    <canvas id="threatDistributionChart"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card">
+                <div class="card-header">
+                  <h5 class="card-title mb-0">
+                    <i class="bi bi-bar-chart me-2"></i>Severity Levels
+                  </h5>
+                </div>
+                <div class="card-body">
+                  <div class="chart-container">
+                    <canvas id="severityChart"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header">
+                  <h5 class="card-title mb-0">
+                    <i class="bi bi-graph-up me-2"></i>Threat Timeline (Last 30
+                    Days)
+                  </h5>
+                </div>
+                <div class="card-body">
+                  <div class="chart-container">
+                    <canvas id="timelineChart"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ingestion Tab -->
+        <div class="tab-pane fade" id="ingestion" role="tabpanel">
+          <div class="row">
+            <div class="col-lg-8">
+              <div class="card">
+                <div
+                  class="card-header d-flex justify-content-between align-items-center"
+                >
+                  <h5 class="card-title mb-0">
+                    <i class="bi bi-cloud-download me-2"></i>Data Source Status
+                  </h5>
+                  <button
+                    class="btn btn-success"
+                    onclick="triggerFullIngestion()"
+                  >
+                    <i class="bi bi-play-circle me-2"></i>Run Full Ingestion
+                    <span
+                      id="fullIngestionSpinner"
+                      class="spinner-border spinner-inline ms-2"
+                      style="display: none"
+                    ></span>
+                  </button>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="card border">
+                        <div class="card-body text-center">
+                          <i
+                            class="bi bi-twitter text-primary"
+                            style="font-size: 2rem"
+                          ></i>
+                          <h6 class="mt-2">Twitter/X</h6>
+                          <div class="d-flex justify-content-between">
+                            <small class="text-muted">Records:</small>
+                            <span id="twitterCount" class="fw-bold">0</span>
+                          </div>
+                          <div class="d-flex justify-content-between">
+                            <small class="text-muted">Last Run:</small>
+                            <span id="twitterLastRun" class="text-muted"
+                              >Never</span
+                            >
+                          </div>
+                          <button
+                            class="btn btn-sm btn-outline-primary mt-2"
+                            onclick="ingestTwitter()"
+                          >
+                            Ingest Now
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="card border">
+                        <div class="card-body text-center">
+                          <i
+                            class="bi bi-globe text-danger"
+                            style="font-size: 2rem"
+                          ></i>
+                          <h6 class="mt-2">Dark Web</h6>
+                          <div class="d-flex justify-content-between">
+                            <small class="text-muted">Records:</small>
+                            <span id="darkwebCount" class="fw-bold">0</span>
+                          </div>
+                          <div class="d-flex justify-content-between">
+                            <small class="text-muted">Last Run:</small>
+                            <span id="darkwebLastRun" class="text-muted"
+                              >Never</span
+                            >
+                          </div>
+                          <button
+                            class="btn btn-sm btn-outline-danger mt-2"
+                            onclick="ingestDarkweb()"
+                          >
+                            Ingest Now
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="card border">
+                        <div class="card-body text-center">
+                          <i
+                            class="bi bi-shield-check text-success"
+                            style="font-size: 2rem"
+                          ></i>
+                          <h6 class="mt-2">MITRE ATT&CK</h6>
+                          <div class="d-flex justify-content-between">
+                            <small class="text-muted">Records:</small>
+                            <span id="mitreCount" class="fw-bold">0</span>
+                          </div>
+                          <div class="d-flex justify-content-between">
+                            <small class="text-muted">Last Run:</small>
+                            <span id="mitreLastRun" class="text-muted"
+                              >Never</span
+                            >
+                          </div>
+                          <button
+                            class="btn btn-sm btn-outline-success mt-2"
+                            onclick="ingestMitre()"
+                          >
+                            Ingest Now
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Ingestion Logs -->
+              <div class="card mt-3">
+                <div class="card-header">
+                  <h5 class="card-title mb-0">
+                    <i class="bi bi-file-text me-2"></i>Ingestion Logs
+                  </h5>
+                </div>
+                <div class="card-body">
+                  <div
+                    id="ingestionLogs"
+                    style="
+                      max-height: 300px;
+                      overflow-y: auto;
+                      font-family: monospace;
+                      font-size: 0.85rem;
+                      background: #f8f9fa;
+                      padding: 1rem;
+                      border-radius: 0.375rem;
+                    "
+                  >
+                    <div class="text-muted">No ingestion logs available...</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Ingestion Timeline -->
+            <div class="col-lg-4">
+              <div class="card">
+                <div class="card-header">
+                  <h5 class="card-title mb-0">
+                    <i class="bi bi-clock me-2"></i>Ingestion Timeline
+                  </h5>
+                </div>
+                <div class="card-body">
+                  <div
+                    id="ingestionTimeline"
+                    style="max-height: 400px; overflow-y: auto"
+                  >
+                    <div class="text-center text-muted">
+                      <i class="bi bi-hourglass-split"></i>
+                      <div>Loading timeline...</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-
-      <div class="grid-2">
-        <!-- Left -->
-        <div>
-          <!-- Analyze text -->
-          <div class="card p-3 mb-3">
-            <div class="fw-semibold mb-2">Analyze text</div>
-            <textarea
-              id="analyzeTextArea"
-              class="form-control mb-2"
-              rows="6"
-              placeholder="Paste threat intel text here..."
-            ></textarea>
-            <div class="d-flex gap-2">
-              <button
-                id="btnAnalyze"
-                class="btn btn-primary"
-                onclick="analyzeText()"
-              >
-                Analyze
-              </button>
-              <button
-                class="btn btn-outline-secondary"
-                onclick="clearAnalyze()"
-              >
-                Clear
-              </button>
-              <div
-                id="analyzeSpinner"
-                class="spinner-border spinner-inline text-primary ms-2"
-                style="display: none"
-              ></div>
-            </div>
-            <div id="analyzeResult" style="display: none" class="mt-3">
-              <hr />
-              <h6>Results</h6>
-              <div class="mb-2">
-                <div class="small-muted">Threat type</div>
-                <div id="resThreatType" class="fw-semibold">—</div>
-              </div>
-              <div class="mb-2">
-                <div class="small-muted">Severity</div>
-                <div id="resSeverity" class="fw-semibold">—</div>
-              </div>
-              <div class="mb-2">
-                <div class="small-muted">Entities (NER)</div>
-                <pre id="resEntities">—</pre>
-              </div>
-              <div class="d-flex gap-2 justify-content-end">
-                <button
-                  class="btn btn-outline-secondary btn-sm"
-                  onclick="copyAnalysis()"
-                >
-                  Copy
-                </button>
-                <button
-                  class="btn btn-success btn-sm"
-                  onclick="downloadAnalysis()"
-                >
-                  Download
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Upload CSV -->
-          <div class="card p-3 mb-3">
-            <div class="fw-semibold mb-2">Batch upload (CSV)</div>
-            <div class="small-muted mb-2">
-              CSV must contain a <code>text</code> column. Results will be
-              returned as a JSON file.
-            </div>
-            <input
-              id="csvFile"
-              type="file"
-              accept=".csv,text/csv"
-              class="form-control mb-2"
-            />
-            <div class="d-flex gap-2">
-              <button
-                id="btnUpload"
-                class="btn btn-primary"
-                onclick="uploadCsv()"
-              >
-                Upload & Analyze
-              </button>
-              <div
-                id="uploadSpinner"
-                class="spinner-border spinner-inline text-primary"
-                style="display: none"
-              ></div>
-            </div>
-            <div id="uploadStatus" class="mt-2 small-muted"></div>
-          </div>
-
-          <!-- Ingestion logs -->
-          <div class="card p-3 mb-3">
-            <div class="fw-semibold mb-2">Last ingestion summary</div>
-            <pre
-              id="lastIngestSummary"
-              style="max-height: 260px; overflow: auto"
-            >
-No ingestion data yet.</pre
-            >
-          </div>
-        </div>
-
-        <!-- Right -->
-        <aside>
-          <div class="card p-3 mb-3">
-            <div class="fw-semibold mb-2">Project quick info</div>
-            <ul class="small-muted mt-2">
-              <li><code>POST /analyze</code> — analyze single text</li>
-              <li><code>POST /upload_csv</code> — batch CSV upload</li>
-              <li><code>POST /ingest_now</code> — trigger ingestion</li>
-              <li><code>GET /</code> — ingestion & health status</li>
-            </ul>
-          </div>
-          <div class="card p-3 mb-3">
-            <div class="fw-semibold mb-2">Tips</div>
-            <ol class="small-muted">
-              <li>Use short samples first to validate model responses.</li>
-              <li>
-                Monitor ingestion frequency to avoid rate-limits (Twitter).
-              </li>
-              <li>Check server logs (uvicorn) for model load issues.</li>
-            </ol>
-          </div>
-          <div class="card p-3">
-            <div class="fw-semibold mb-2">Last action</div>
-            <div id="lastAction" class="small-muted">—</div>
-          </div>
-        </aside>
-      </div>
-
-      <footer class="mt-4 small-muted text-center">
-        © CTI-NLP Project — ATMECE Mysuru · Dashboard
-      </footer>
     </div>
 
-    <!-- JS -->
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+      <!-- Toasts will be dynamically added here -->
+    </div>
+
+    <!-- Threat Detail Modal -->
+    <div class="modal fade" id="threatDetailModal" tabindex="-1">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Threat Intelligence Details</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body" id="threatDetailContent">
+            <!-- Content will be loaded dynamically -->
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-outline-danger"
+              id="deleteThreatBtn"
+            >
+              <i class="bi bi-trash me-1"></i>Delete
+            </button>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-      function isoToLocal(iso) {
-        try {
-          return new Date(iso).toLocaleString();
-        } catch (e) {
-          return iso;
-        }
+      // Global variables
+      let charts = {};
+      let currentPage = 1;
+      let threatsPerPage = 20;
+      let lastAnalysisData = null;
+
+      // Initialize dashboard
+      document.addEventListener("DOMContentLoaded", function () {
+        initializeDashboard();
+        updateCurrentTime();
+        setInterval(updateCurrentTime, 1000);
+        setInterval(refreshOverview, 30000); // Refresh every 30 seconds
+      });
+
+      function updateCurrentTime() {
+        document.getElementById("currentTime").textContent =
+          new Date().toLocaleString();
       }
 
-      async function fetchStatus() {
-        try {
-          const resp = await fetch("/", { cache: "no-store" });
-          const json = await resp.json();
-          const st = json.ingestion_status || {};
-          document.getElementById("lastRun").innerText = st.last_run
-            ? isoToLocal(st.last_run)
-            : "Never";
-          const sum = st.summary || {};
-          document.getElementById("countDark").innerText = sum.darkweb ?? 0;
-          document.getElementById("countTwitter").innerText = sum.twitter ?? 0;
-          document.getElementById("countMitre").innerText =
-            sum.mitre_attack ?? 0;
-          document.getElementById("countTotal").innerText =
-            st.total_records ?? 0;
-          document.getElementById("lastIngestSummary").innerText =
-            JSON.stringify(st, null, 2);
-          document.getElementById("modelStatus").innerText =
-            json.model_status ?? "Models loaded";
-          document.getElementById("lastAction").innerText =
-            "Status refreshed at " + new Date().toLocaleString();
-        } catch (err) {
-          console.error(err);
-          document.getElementById("serverStatusDot").style.background =
-            "#dc3545";
-          document.getElementById("serverStatusText").innerText = "Unavailable";
-          document.getElementById("lastIngestSummary").innerText =
-            "Failed to fetch status: " + err.message;
-        }
+      async function initializeDashboard() {
+        await refreshOverview();
+        await initializeCharts();
+        await loadThreatFeed();
+        await loadThreats();
       }
-      async function refreshStatus() {
-        await fetchStatus();
-      }
-      fetchStatus();
-      setInterval(fetchStatus, 60000);
 
-      async function runIngestionNow() {
-        document.getElementById("ingestSpinner").style.display = "inline-block";
-        document.getElementById("btnRunIngest").disabled = true;
-        document.getElementById("btnRunIngestLabel").innerText = "Running...";
+      // API Helper Functions
+      async function apiCall(endpoint, options = {}) {
         try {
-          const r = await fetch("/ingest_now", { method: "POST" });
-          const j = await r.json();
-          if (r.ok && j.status === "success") {
-            document.getElementById("lastAction").innerText =
-              "Ingestion completed at " + new Date().toLocaleString();
-            const s = j.ingestion_summary || {};
-            document.getElementById("lastIngestSummary").innerText =
-              JSON.stringify(s, null, 2);
-            document.getElementById("countDark").innerText =
-              s.summary?.darkweb ?? 0;
-            document.getElementById("countTwitter").innerText =
-              s.summary?.twitter ?? 0;
-            document.getElementById("countMitre").innerText =
-              s.summary?.mitre_attack ?? 0;
-            document.getElementById("countTotal").innerText =
-              s.total_records ?? 0;
-          } else {
-            alert("Ingestion error: " + (j?.message || "Failed"));
+          const response = await fetch(endpoint, {
+            headers: {
+              "Content-Type": "application/json",
+              ...options.headers,
+            },
+            ...options,
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
           }
-        } catch (err) {
-          alert("Ingestion failed: " + err.message);
-        } finally {
-          document.getElementById("ingestSpinner").style.display = "none";
-          document.getElementById("btnRunIngest").disabled = false;
-          document.getElementById("btnRunIngestLabel").innerText =
-            "Run Ingestion Now";
-          fetchStatus();
+
+          return await response.json();
+        } catch (error) {
+          console.error(`API call failed: ${endpoint}`, error);
+          showToast(`API Error: ${error.message}`, "error");
+          throw error;
         }
       }
 
-      async function analyzeText() {
-        const txt = document.getElementById("analyzeTextArea").value.trim();
-        if (!txt) {
-          alert("Enter text to analyze.");
+      // Overview Functions
+      async function refreshOverview() {
+        try {
+          const [healthData, analyticsData] = await Promise.all([
+            apiCall("/health"),
+            apiCall("/analytics?days=30"),
+          ]);
+
+          updateSystemHealth(healthData);
+          updateDashboardStats(analyticsData);
+        } catch (error) {
+          updateSystemHealth({ status: "error", error: error.message });
+        }
+      }
+
+      function updateSystemHealth(data) {
+        const isHealthy = data.status === "healthy";
+        const statusElement = document.getElementById("systemStatus");
+        const statusIndicator = document.querySelector(".status-indicator");
+
+        if (isHealthy) {
+          statusElement.textContent = "System Operational";
+          statusIndicator.className = "status-indicator status-healthy";
+        } else {
+          statusElement.textContent = "System Issues Detected";
+          statusIndicator.className = "status-indicator status-error";
+        }
+
+        // Update service statuses
+        const services = data.services || {};
+        updateServiceStatus("apiStatus", isHealthy);
+        updateServiceStatus("dbStatus", services.database === "connected");
+        updateServiceStatus("redisStatus", services.redis === "connected");
+        updateServiceStatus("modelStatus", services.models !== "error");
+      }
+
+      function updateServiceStatus(elementId, isHealthy) {
+        const element = document.getElementById(elementId);
+        if (element) {
+          element.className = `badge ${isHealthy ? "bg-success" : "bg-danger"}`;
+          element.textContent = isHealthy
+            ? elementId === "apiStatus"
+              ? "Online"
+              : elementId === "dbStatus"
+              ? "Connected"
+              : elementId === "redisStatus"
+              ? "Active"
+              : "Loaded"
+            : "Offline";
+        }
+      }
+
+      function updateDashboardStats(data) {
+        document.getElementById("totalThreats").textContent =
+          data.total_threats || 0;
+        document.getElementById("criticalThreats").textContent =
+          (data.threats_by_severity && data.threats_by_severity.Critical) || 0;
+        document.getElementById("todayThreats").textContent =
+          data.threats_today || 0;
+
+        // Update source counts
+        const sourceStats = data.threats_by_source || {};
+        document.getElementById("twitterCount").textContent =
+          sourceStats.Twitter || 0;
+        document.getElementById("darkwebCount").textContent =
+          sourceStats.DarkWeb || 0;
+        document.getElementById("mitreCount").textContent =
+          sourceStats.MITRE || 0;
+      }
+
+      // Threat Feed Functions
+      async function loadThreatFeed() {
+        try {
+          const feedData = await apiCall("/feed?limit=10");
+          const feedContainer = document.getElementById("threatFeed");
+
+          if (feedData.threats && feedData.threats.length > 0) {
+            feedContainer.innerHTML = feedData.threats
+              .map(
+                (threat) => `
+              <div class="threat-item">
+                <div class="d-flex justify-content-between align-items-start">
+                  <div class="flex-grow-1">
+                    <div class="d-flex gap-2 mb-2">
+                      <span class="threat-type-badge bg-${getThreatTypeColor(
+                        threat.threat_type
+                      )} text-white">
+                        ${threat.threat_type || "Unknown"}
+                      </span>
+                      <span class="severity-badge severity-${(
+                        threat.severity || "low"
+                      ).toLowerCase()}">
+                        ${threat.severity || "Unknown"}
+                      </span>
+                    </div>
+                    <div class="threat-text mb-2">
+                      ${truncateText(threat.original_text, 120)}
+                    </div>
+                    <div class="small text-muted">
+                      <i class="bi bi-calendar me-1"></i>
+                      ${formatDateTime(threat.created_at)}
+                      <span class="ms-3">
+                        <i class="bi bi-database me-1"></i>
+                        ${threat.source || "Unknown"}
+                      </span>
+                    </div>
+                  </div>
+                  <button class="btn btn-sm btn-outline-primary" onclick="viewThreatDetails('${
+                    threat.id
+                  }')">
+                    <i class="bi bi-eye"></i>
+                  </button>
+                </div>
+              </div>
+            `
+              )
+              .join("");
+          } else {
+            feedContainer.innerHTML =
+              '<div class="text-center p-4 text-muted">No threats in feed</div>';
+          }
+        } catch (error) {
+          document.getElementById("threatFeed").innerHTML =
+            '<div class="text-center p-4 text-danger">Failed to load threat feed</div>';
+        }
+      }
+
+      function refreshThreatFeed() {
+        loadThreatFeed();
+      }
+
+      // Analysis Functions
+      function loadSampleText() {
+        const samples = [
+          "APT29 group launching sophisticated phishing attacks against government agencies using fake Microsoft Office 365 login pages to steal credentials and gain unauthorized access to sensitive systems.",
+          "Ransomware attack encrypting hospital systems with .locked extension demanding Bitcoin payment for decryption keys, causing disruption to patient care services.",
+          "DDoS attack targeting financial infrastructure using botnet of compromised IoT devices, causing service outages across multiple banking platforms.",
+          "Zero-day exploit discovered in popular VPN software allowing remote code execution with CVSS score 9.8, actively being exploited in the wild.",
+          "Insider threat at technology company resulted in theft of proprietary source code and customer database containing 2 million records.",
+        ];
+
+        const randomSample =
+          samples[Math.floor(Math.random() * samples.length)];
+        document.getElementById("analyzeText").value = randomSample;
+      }
+
+      async function analyzeThreatText() {
+        const text = document.getElementById("analyzeText").value.trim();
+        if (!text) {
+          showToast("Please enter threat text to analyze", "warning");
           return;
         }
-        document.getElementById("btnAnalyze").disabled = true;
-        document.getElementById("analyzeSpinner").style.display =
-          "inline-block";
-        document.getElementById("analyzeResult").style.display = "none";
+
+        const analyzeBtn = document
+          .getElementById("analyzeText")
+          .nextElementSibling.querySelector(".btn-analyze");
+        const spinner = document.getElementById("analyzeSpinner");
+
+        analyzeBtn.disabled = true;
+        spinner.style.display = "inline-block";
+
+        const startTime = Date.now();
+
         try {
-          const resp = await fetch("/analyze", {
+          const result = await apiCall("/analyze", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ text: txt }),
+            body: JSON.stringify({ text: text }),
           });
-          const j = await resp.json();
-          if (!resp.ok) throw new Error(j?.error || "Analyze failed");
-          document.getElementById("resThreatType").innerText =
-            j.threat_type ?? "N/A";
-          document.getElementById("resSeverity").innerText =
-            j.severity ?? "N/A";
-          document.getElementById("resEntities").innerText = JSON.stringify(
-            j.entities ?? [],
-            null,
-            2
-          );
-          document.getElementById("analyzeResult").style.display = "block";
-          document.getElementById("lastAction").innerText =
-            "Analyzed text at " + new Date().toLocaleString();
-        } catch (err) {
-          alert("Analyze failed: " + err.message);
+
+          const processingTime = Date.now() - startTime;
+          lastAnalysisData = { ...result, processing_time: processingTime };
+
+          displayAnalysisResults(result, processingTime);
+          showToast("Analysis completed successfully", "success");
+        } catch (error) {
+          showToast(`Analysis failed: ${error.message}`, "error");
         } finally {
-          document.getElementById("btnAnalyze").disabled = false;
-          document.getElementById("analyzeSpinner").style.display = "none";
+          analyzeBtn.disabled = false;
+          spinner.style.display = "none";
         }
       }
-      function clearAnalyze() {
-        document.getElementById("analyzeTextArea").value = "";
-        document.getElementById("analyzeResult").style.display = "none";
+
+      function displayAnalysisResults(result, processingTime) {
+        document.getElementById("resultThreatType").textContent =
+          result.threat_type || "Unknown";
+        document.getElementById(
+          "resultThreatType"
+        ).className = `threat-type-badge bg-${getThreatTypeColor(
+          result.threat_type
+        )} text-white`;
+
+        const severityElement = document.getElementById("resultSeverity");
+        severityElement.textContent = result.severity || "Unknown";
+        severityElement.className = `severity-badge severity-${(
+          result.severity || "low"
+        ).toLowerCase()}`;
+
+        // Confidence score
+        const confidence = Math.round(
+          (result.confidence_scores?.threat_classification || 0.8) * 100
+        );
+        const confidenceBar = document.getElementById("confidenceBar");
+        confidenceBar.style.width = `${confidence}%`;
+        confidenceBar.textContent = `${confidence}%`;
+        confidenceBar.className = `progress-bar ${
+          confidence >= 80
+            ? "bg-success"
+            : confidence >= 60
+            ? "bg-warning"
+            : "bg-danger"
+        }`;
+
+        document.getElementById(
+          "processingTime"
+        ).textContent = `${processingTime} ms`;
+
+        // Display entities
+        displayEntities(result.entities);
+
+        document.getElementById("analysisResults").style.display = "block";
       }
-      function copyAnalysis() {
-        const text = `Threat Type: ${
-          document.getElementById("resThreatType").innerText
-        }\nSeverity: ${
-          document.getElementById("resSeverity").innerText
-        }\nEntities:\n${document.getElementById("resEntities").innerText}`;
-        navigator.clipboard.writeText(text);
-        toast("Analysis copied to clipboard");
+
+      function displayEntities(entities) {
+        const container = document.getElementById("extractedEntities");
+        if (!entities || Object.keys(entities).length === 0) {
+          container.innerHTML =
+            '<span class="text-muted">No entities detected</span>';
+          return;
+        }
+
+        const entityHtml = Object.entries(entities)
+          .map(([type, items]) => {
+            if (!items || items.length === 0) return "";
+            return items
+              .map((item) => `<span class="entity-tag">${type}: ${item}</span>`)
+              .join("");
+          })
+          .join("");
+
+        container.innerHTML =
+          entityHtml || '<span class="text-muted">No entities detected</span>';
       }
-      function downloadAnalysis() {
-        const data = {
-          threat_type: document.getElementById("resThreatType").innerText,
-          severity: document.getElementById("resSeverity").innerText,
-          entities: JSON.parse(
-            document.getElementById("resEntities").innerText || "[]"
-          ),
-        };
-        const blob = new Blob([JSON.stringify(data, null, 2)], {
+
+      function clearAnalysisForm() {
+        document.getElementById("analyzeText").value = "";
+        document.getElementById("analysisResults").style.display = "none";
+        lastAnalysisData = null;
+      }
+
+      async function saveToDatabase() {
+        if (!lastAnalysisData) {
+          showToast("No analysis data to save", "warning");
+          return;
+        }
+
+        try {
+          // The analyze endpoint already saves to database, so we just need to confirm
+          showToast("Analysis has been saved to database", "success");
+        } catch (error) {
+          showToast(`Failed to save to database: ${error.message}`, "error");
+        }
+      }
+
+      function copyAnalysisResults() {
+        if (!lastAnalysisData) return;
+
+        const text = `Threat Type: ${lastAnalysisData.threat_type}
+Severity: ${lastAnalysisData.severity}
+Confidence: ${Math.round(
+          (lastAnalysisData.confidence_scores?.threat_classification || 0.8) *
+            100
+        )}%
+Processing Time: ${lastAnalysisData.processing_time} ms
+Entities: ${JSON.stringify(lastAnalysisData.entities, null, 2)}`;
+
+        navigator.clipboard.writeText(text).then(() => {
+          showToast("Analysis results copied to clipboard", "success");
+        });
+      }
+
+      function downloadAnalysisResults() {
+        if (!lastAnalysisData) return;
+
+        const blob = new Blob([JSON.stringify(lastAnalysisData, null, 2)], {
           type: "application/json",
         });
+
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = "analysis_result.json";
+        a.download = `threat_analysis_${new Date()
+          .toISOString()
+          .slice(0, 19)}.json`;
+        document.body.appendChild(a);
         a.click();
+        a.remove();
         URL.revokeObjectURL(url);
       }
 
-      async function uploadCsv() {
-        const fileInput = document.getElementById("csvFile");
+      function downloadSampleCsv() {
+        const csvContent = `text
+"APT29 group launching sophisticated phishing attacks against government agencies"
+"Ransomware attack encrypting hospital systems with .locked extension"
+"DDoS attack targeting financial infrastructure using botnet"
+"Zero-day exploit in VPN software allowing remote code execution"
+"Insider threat resulted in theft of proprietary source code"`;
+
+        const blob = new Blob([csvContent], { type: "text/csv" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "threat_analysis_sample.csv";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      async function uploadCsvFile() {
+        const fileInput = document.getElementById("csvUpload");
         if (!fileInput.files.length) {
-          alert("Select a CSV file.");
+          showToast("Please select a CSV file", "warning");
           return;
         }
-        document.getElementById("btnUpload").disabled = true;
-        document.getElementById("uploadSpinner").style.display = "inline-block";
-        document.getElementById("uploadStatus").innerText = "Uploading...";
+
+        const uploadBtn =
+          fileInput.nextElementSibling.querySelector(".btn-primary");
+        const spinner = document.getElementById("uploadSpinner");
+        const statusDiv = document.getElementById("uploadStatus");
+
+        uploadBtn.disabled = true;
+        spinner.style.display = "inline-block";
+        statusDiv.innerHTML =
+          '<div class="alert alert-info">Uploading and analyzing...</div>';
+
         try {
-          const form = new FormData();
-          form.append("file", fileInput.files[0]);
-          const resp = await fetch("/upload_csv", {
+          const formData = new FormData();
+          formData.append("file", fileInput.files[0]);
+
+          const response = await fetch("/upload_csv", {
             method: "POST",
-            body: form,
+            body: formData,
           });
-          if (!resp.ok)
-            throw new Error((await resp.json()).error || "Upload failed");
-          const blob = await resp.blob();
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || "Upload failed");
+          }
+
+          const blob = await response.blob();
           const url = URL.createObjectURL(blob);
           const a = document.createElement("a");
           a.href = url;
-          a.download = "cti_batch_results.json";
+          a.download = "batch_analysis_results.json";
           document.body.appendChild(a);
           a.click();
           a.remove();
           URL.revokeObjectURL(url);
-          document.getElementById("uploadStatus").innerText =
-            "Batch processed — downloaded results.";
-          document.getElementById("lastAction").innerText =
-            "Uploaded CSV at " + new Date().toLocaleString();
-        } catch (err) {
-          document.getElementById("uploadStatus").innerText =
-            "Upload error: " + err.message;
-          alert("Upload failed: " + err.message);
+
+          statusDiv.innerHTML =
+            '<div class="alert alert-success">Batch analysis completed! Results downloaded.</div>';
+          showToast("Batch analysis completed successfully", "success");
+        } catch (error) {
+          statusDiv.innerHTML = `<div class="alert alert-danger">Upload failed: ${error.message}</div>`;
+          showToast(`Upload failed: ${error.message}`, "error");
         } finally {
-          document.getElementById("btnUpload").disabled = false;
-          document.getElementById("uploadSpinner").style.display = "none";
+          uploadBtn.disabled = false;
+          spinner.style.display = "none";
         }
       }
-      function toast(msg) {
-        const el = document.createElement("div");
-        el.className = "position-fixed bottom-0 end-0 p-3";
-        el.style.zIndex = 1080;
-        el.innerHTML = `<div class="toast show text-bg-dark"><div class="d-flex"><div class="toast-body">${msg}</div><button type="button" class="btn-close btn-close-white ms-2 me-2" onclick="this.closest('.position-fixed').remove()"></button></div></div>`;
-        document.body.appendChild(el);
-        setTimeout(() => el.remove(), 6000);
+
+      // Threats Management
+      async function loadThreats() {
+        try {
+          const threatType = document.getElementById("threatTypeFilter").value;
+          const severity = document.getElementById("severityFilter").value;
+
+          let url = `/threats?limit=${threatsPerPage}&offset=${
+            (currentPage - 1) * threatsPerPage
+          }`;
+          if (threatType) url += `&threat_type=${threatType}`;
+          if (severity) url += `&severity=${severity}`;
+
+          const data = await apiCall(url);
+          displayThreats(data.threats || []);
+          updateThreatsPagination(data.count || 0);
+        } catch (error) {
+          document.getElementById("threatsTableBody").innerHTML =
+            '<tr><td colspan="7" class="text-center text-danger">Failed to load threats</td></tr>';
+        }
       }
+
+      function displayThreats(threats) {
+        const tbody = document.getElementById("threatsTableBody");
+
+        if (threats.length === 0) {
+          tbody.innerHTML =
+            '<tr><td colspan="7" class="text-center text-muted">No threats found</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = threats
+          .map(
+            (threat) => `
+          <tr>
+            <td><code>${threat.id.slice(0, 8)}...</code></td>
+            <td><span class="badge bg-secondary">${
+              threat.source || "Unknown"
+            }</span></td>
+            <td><span class="threat-type-badge bg-${getThreatTypeColor(
+              threat.threat_type
+            )} text-white">${threat.threat_type || "Unknown"}</span></td>
+            <td><span class="severity-badge severity-${(
+              threat.severity || "low"
+            ).toLowerCase()}">${threat.severity || "Unknown"}</span></td>
+            <td>${truncateText(threat.original_text, 80)}</td>
+            <td>${formatDateTime(threat.created_at)}</td>
+            <td>
+              <button class="btn btn-sm btn-outline-primary me-1" onclick="viewThreatDetails('${
+                threat.id
+              }')">
+                <i class="bi bi-eye"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-danger" onclick="deleteThreat('${
+                threat.id
+              }')">
+                <i class="bi bi-trash"></i>
+              </button>
+            </td>
+          </tr>
+        `
+          )
+          .join("");
+      }
+
+      function updateThreatsPagination(totalCount) {
+        document.getElementById(
+          "threatsCount"
+        ).textContent = `Showing ${Math.min(
+          (currentPage - 1) * threatsPerPage + 1,
+          totalCount
+        )}-${Math.min(
+          currentPage * threatsPerPage,
+          totalCount
+        )} of ${totalCount} threats`;
+
+        const totalPages = Math.ceil(totalCount / threatsPerPage);
+        const pagination = document.getElementById("threatsPagination");
+
+        let paginationHtml = "";
+
+        // Previous button
+        paginationHtml += `
+          <li class="page-item ${currentPage === 1 ? "disabled" : ""}">
+            <a class="page-link" href="#" onclick="changePage(${
+              currentPage - 1
+            })">Previous</a>
+          </li>
+        `;
+
+        // Page numbers
+        const startPage = Math.max(1, currentPage - 2);
+        const endPage = Math.min(totalPages, currentPage + 2);
+
+        for (let i = startPage; i <= endPage; i++) {
+          paginationHtml += `
+            <li class="page-item ${i === currentPage ? "active" : ""}">
+              <a class="page-link" href="#" onclick="changePage(${i})">${i}</a>
+            </li>
+          `;
+        }
+
+        // Next button
+        paginationHtml += `
+          <li class="page-item ${currentPage === totalPages ? "disabled" : ""}">
+            <a class="page-link" href="#" onclick="changePage(${
+              currentPage + 1
+            })">Next</a>
+          </li>
+        `;
+
+        pagination.innerHTML = paginationHtml;
+      }
+
+      function changePage(page) {
+        currentPage = page;
+        loadThreats();
+      }
+
+      function filterThreats() {
+        currentPage = 1;
+        loadThreats();
+      }
+
+      function refreshThreats() {
+        loadThreats();
+      }
+
+      async function viewThreatDetails(threatId) {
+        try {
+          const threat = await apiCall(`/threats/${threatId}`);
+
+          const modalContent = document.getElementById("threatDetailContent");
+          modalContent.innerHTML = `
+            <div class="row">
+              <div class="col-md-6">
+                <h6>Basic Information</h6>
+                <table class="table table-sm">
+                  <tr><td><strong>ID:</strong></td><td><code>${
+                    threat.id
+                  }</code></td></tr>
+                  <tr><td><strong>Source:</strong></td><td><span class="badge bg-secondary">${
+                    threat.source
+                  }</span></td></tr>
+                  <tr><td><strong>Type:</strong></td><td><span class="threat-type-badge bg-${getThreatTypeColor(
+                    threat.threat_type
+                  )} text-white">${threat.threat_type}</span></td></tr>
+                  <tr><td><strong>Severity:</strong></td><td><span class="severity-badge severity-${threat.severity.toLowerCase()}">${
+            threat.severity
+          }</span></td></tr>
+                  <tr><td><strong>Created:</strong></td><td>${formatDateTime(
+                    threat.created_at
+                  )}</td></tr>
+                </table>
+              </div>
+              <div class="col-md-6">
+                <h6>Analysis Details</h6>
+                <table class="table table-sm">
+                  <tr><td><strong>Confidence:</strong></td><td>${Math.round(
+                    (threat.confidence_score || 0) * 100
+                  )}%</td></tr>
+                  <tr><td><strong>Processed:</strong></td><td>${
+                    threat.is_processed ? "Yes" : "No"
+                  }</td></tr>
+                  <tr><td><strong>False Positive:</strong></td><td>${
+                    threat.is_false_positive ? "Yes" : "No"
+                  }</td></tr>
+                </table>
+              </div>
+            </div>
+            <div class="mt-3">
+              <h6>Original Text</h6>
+              <div class="p-3 bg-light rounded">${threat.original_text}</div>
+            </div>
+            ${
+              threat.entities
+                ? `
+              <div class="mt-3">
+                <h6>Extracted Entities</h6>
+                <div class="entity-container">
+                  ${Object.entries(threat.entities)
+                    .map(([type, items]) =>
+                      items
+                        .map(
+                          (item) =>
+                            `<span class="entity-tag">${type}: ${item}</span>`
+                        )
+                        .join("")
+                    )
+                    .join("")}
+                </div>
+              </div>
+            `
+                : ""
+            }
+          `;
+
+          document.getElementById("deleteThreatBtn").onclick = () =>
+            deleteThreat(threatId);
+
+          new bootstrap.Modal(
+            document.getElementById("threatDetailModal")
+          ).show();
+        } catch (error) {
+          showToast(`Failed to load threat details: ${error.message}`, "error");
+        }
+      }
+
+      async function deleteThreat(threatId) {
+        if (!confirm("Are you sure you want to delete this threat?")) return;
+
+        try {
+          await apiCall(`/threats/${threatId}`, { method: "DELETE" });
+          showToast("Threat deleted successfully", "success");
+          loadThreats();
+
+          // Close modal if open
+          const modal = bootstrap.Modal.getInstance(
+            document.getElementById("threatDetailModal")
+          );
+          if (modal) modal.hide();
+        } catch (error) {
+          showToast(`Failed to delete threat: ${error.message}`, "error");
+        }
+      }
+
+      // Analytics and Charts
+      async function initializeCharts() {
+        try {
+          const analyticsData = await apiCall("/analytics?days=30");
+
+          createThreatDistributionChart(
+            analyticsData.threats_by_category || {}
+          );
+          createSeverityChart(analyticsData.threats_by_severity || {});
+          createTimelineChart(analyticsData.threats_timeline || []);
+        } catch (error) {
+          console.error("Failed to load analytics data:", error);
+        }
+      }
+
+      function createThreatDistributionChart(data) {
+        const ctx = document
+          .getElementById("threatDistributionChart")
+          .getContext("2d");
+
+        charts.threatDistribution = new Chart(ctx, {
+          type: "doughnut",
+          data: {
+            labels: Object.keys(data),
+            datasets: [
+              {
+                data: Object.values(data),
+                backgroundColor: [
+                  "#dc3545",
+                  "#fd7e14",
+                  "#ffc107",
+                  "#198754",
+                  "#0dcaf0",
+                  "#6f42c1",
+                  "#d63384",
+                ],
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: "bottom",
+              },
+            },
+          },
+        });
+      }
+
+      function createSeverityChart(data) {
+        const ctx = document.getElementById("severityChart").getContext("2d");
+
+        charts.severity = new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: ["Critical", "High", "Medium", "Low"],
+            datasets: [
+              {
+                label: "Threats",
+                data: [
+                  data.Critical || 0,
+                  data.High || 0,
+                  data.Medium || 0,
+                  data.Low || 0,
+                ],
+                backgroundColor: ["#dc3545", "#fd7e14", "#ffc107", "#198754"],
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: true,
+              },
+            },
+          },
+        });
+      }
+
+      function createTimelineChart(data) {
+        const ctx = document.getElementById("timelineChart").getContext("2d");
+
+        charts.timeline = new Chart(ctx, {
+          type: "line",
+          data: {
+            labels: data.map((d) => d.date),
+            datasets: [
+              {
+                label: "Threats per Day",
+                data: data.map((d) => d.count),
+                borderColor: "#0d6efd",
+                backgroundColor: "#0d6efd20",
+                fill: true,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: true,
+              },
+            },
+          },
+        });
+      }
+
+      // Ingestion Functions
+      async function triggerIngestion() {
+        const spinner = document.getElementById("ingestionSpinner");
+        spinner.style.display = "inline-block";
+
+        try {
+          const result = await apiCall("/ingest_now", { method: "POST" });
+          showToast("Ingestion completed successfully", "success");
+          await refreshOverview();
+          await loadThreatFeed();
+        } catch (error) {
+          showToast(`Ingestion failed: ${error.message}`, "error");
+        } finally {
+          spinner.style.display = "none";
+        }
+      }
+
+      async function triggerFullIngestion() {
+        const spinner = document.getElementById("fullIngestionSpinner");
+        spinner.style.display = "inline-block";
+
+        try {
+          const result = await apiCall("/ingest_now", { method: "POST" });
+          showToast("Full ingestion completed successfully", "success");
+          await refreshOverview();
+          await loadThreatFeed();
+          updateIngestionLogs(result);
+        } catch (error) {
+          showToast(`Full ingestion failed: ${error.message}`, "error");
+        } finally {
+          spinner.style.display = "none";
+        }
+      }
+
+      function updateIngestionLogs(data) {
+        const logsContainer = document.getElementById("ingestionLogs");
+        const timestamp = new Date().toLocaleString();
+
+        logsContainer.innerHTML = `
+          <div>[${timestamp}] Full ingestion started</div>
+          <div>[${timestamp}] Sources processed: ${JSON.stringify(
+          data.ingestion_summary?.summary || {}
+        )}</div>
+          <div>[${timestamp}] Total records: ${
+          data.ingestion_summary?.total_records || 0
+        }</div>
+          <div>[${timestamp}] Ingestion completed successfully</div>
+        `;
+      }
+
+      // Navigation Functions
+      function showAnalyzeTab() {
+        new bootstrap.Tab(document.getElementById("analyze-tab")).show();
+      }
+
+      function showThreatsTab() {
+        new bootstrap.Tab(document.getElementById("threats-tab")).show();
+      }
+
+      // Utility Functions
+      function getThreatTypeColor(threatType) {
+        const colors = {
+          Phishing: "warning",
+          Malware: "danger",
+          Ransomware: "dark",
+          APT: "primary",
+          DDoS: "info",
+          "Data Breach": "secondary",
+          Vulnerability: "success",
+          "Insider Threat": "dark",
+        };
+        return colors[threatType] || "secondary";
+      }
+
+      function truncateText(text, maxLength) {
+        if (!text) return "";
+        return text.length > maxLength
+          ? text.substring(0, maxLength) + "..."
+          : text;
+      }
+
+      function formatDateTime(dateString) {
+        if (!dateString) return "Unknown";
+        return new Date(dateString).toLocaleString();
+      }
+
+      function showToast(message, type = "info") {
+        const toastContainer = document.querySelector(".toast-container");
+        const toastId = "toast_" + Date.now();
+
+        const bgClass =
+          {
+            success: "bg-success",
+            error: "bg-danger",
+            warning: "bg-warning",
+            info: "bg-info",
+          }[type] || "bg-info";
+
+        const toastHtml = `
+          <div id="${toastId}" class="toast align-items-center text-white ${bgClass} border-0" role="alert">
+            <div class="d-flex">
+              <div class="toast-body">${message}</div>
+              <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+          </div>
+        `;
+
+        toastContainer.insertAdjacentHTML("beforeend", toastHtml);
+
+        const toastElement = document.getElementById(toastId);
+        const toast = new bootstrap.Toast(toastElement);
+        toast.show();
+
+        // Remove toast element after it's hidden
+        toastElement.addEventListener("hidden.bs.toast", function () {
+          toastElement.remove();
+        });
+      }
+
+      // Tab change handlers
+      document.addEventListener("shown.bs.tab", function (e) {
+        const targetTab = e.target.getAttribute("data-bs-target");
+
+        switch (targetTab) {
+          case "#threats":
+            loadThreats();
+            break;
+          case "#analytics":
+            // Refresh charts if needed
+            Object.values(charts).forEach((chart) => chart.resize());
+            break;
+          case "#ingestion":
+            // Load ingestion timeline
+            break;
+        }
+      });
     </script>
   </body>
 </html>
