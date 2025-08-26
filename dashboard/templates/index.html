@@ -1069,6 +1069,14 @@
       let currentPage = 1;
       let threatsPerPage = 20;
       let lastAnalysisData = null;
+      let isTestMode = false;
+      let databaseConnected = false;
+      let systemStatus = {
+        api: true,
+        database: false,
+        redis: false,
+        models: false
+      };
 
       // Initialize dashboard
       document.addEventListener("DOMContentLoaded", function () {
