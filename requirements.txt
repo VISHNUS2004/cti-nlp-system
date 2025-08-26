@@ -19,3 +19,26 @@ python-dotenv
 requests
 deep-translator
 langdetect
+
+# Database
+psycopg2-binary
+sqlalchemy
+alembic
+
+# Caching
+redis
+aioredis
+
+# Testing
+pytest
+pytest-asyncio
+pytest-cov
+httpx
+
+# Development
+black
+flake8
+isort
+
+# Monitoring
+prometheus-client
