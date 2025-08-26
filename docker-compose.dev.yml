@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   # PostgreSQL Database
@@ -44,7 +44,7 @@ services:
 
   # Main Application
   app:
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile
     container_name: cti-app

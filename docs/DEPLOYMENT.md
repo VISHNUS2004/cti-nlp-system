@@ -49,6 +49,7 @@ nano .env
 ```
 
 Required environment variables:
+
 ```bash
 # Database
 DATABASE_URL=postgresql://cti_user:cti_password123@localhost:5432/cti_nlp
@@ -366,7 +367,7 @@ curl http://localhost:8000/health
 
 ```sql
 -- Create additional indexes for better performance
-CREATE INDEX CONCURRENTLY idx_threat_intel_text_search 
+CREATE INDEX CONCURRENTLY idx_threat_intel_text_search
 ON threat_intel USING gin(to_tsvector('english', original_text));
 
 -- Analyze tables
@@ -384,16 +385,16 @@ ANALYZE iocs;
 async def get_threats(db: Session = Depends(get_db_session)):
     cache_key = "recent_threats"
     cached_data = redis_client.get(cache_key)
-    
+
     if cached_data:
         return json.loads(cached_data)
-    
+
     # Fetch from database
     threats = threat_service.get_recent_threats()
-    
+
     # Cache for 5 minutes
     redis_client.setex(cache_key, 300, json.dumps(threats))
-    
+
     return threats
 ```
 
@@ -506,9 +507,9 @@ journalctl -u docker -f
 ```bash
 # Check database performance
 docker-compose exec postgres psql -U cti_user -d cti_nlp -c "
-SELECT query, calls, total_time, mean_time 
-FROM pg_stat_statements 
-ORDER BY total_time DESC 
+SELECT query, calls, total_time, mean_time
+FROM pg_stat_statements
+ORDER BY total_time DESC
 LIMIT 10;
 "
 
@@ -533,4 +534,4 @@ docker-compose exec redis redis-cli info stats
 
 ---
 
-*Last updated: August 2025*
+_Last updated: August 2025_

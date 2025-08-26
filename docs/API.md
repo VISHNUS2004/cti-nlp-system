@@ -20,6 +20,7 @@ Currently, the API is open for development. In production, implement proper auth
 Check the health status of the application and its dependencies.
 
 **Response:**
+
 ```json
 {
   "status": "healthy",
@@ -39,6 +40,7 @@ Check the health status of the application and its dependencies.
 Analyze threat intelligence text and extract entities, classify threat type, and predict severity.
 
 **Request Body:**
+
 ```json
 {
   "text": "APT29 group launching phishing campaign targeting financial institutions"
@@ -46,6 +48,7 @@ Analyze threat intelligence text and extract entities, classify threat type, and
 ```
 
 **Response:**
+
 ```json
 {
   "id": "550e8400-e29b-41d4-a716-446655440000",
@@ -68,17 +71,20 @@ Analyze threat intelligence text and extract entities, classify threat type, and
 Retrieve threat intelligence records with optional filtering.
 
 **Query Parameters:**
+
 - `limit` (int): Maximum number of records to return (default: 100)
 - `source` (string): Filter by data source (Twitter, DarkWeb, MITRE, Manual, Feed)
 - `threat_type` (string): Filter by threat category
 - `severity` (string): Filter by severity level
 
 **Example:**
+
 ```
 GET /threats?limit=50&threat_type=Phishing&severity=High
 ```
 
 **Response:**
+
 ```json
 {
   "threats": [
@@ -101,6 +107,7 @@ GET /threats?limit=50&threat_type=Phishing&severity=High
 Get detailed information about a specific threat.
 
 **Response:**
+
 ```json
 {
   "id": "550e8400-e29b-41d4-a716-446655440000",
@@ -125,6 +132,7 @@ Get detailed information about a specific threat.
 Delete a threat intelligence record.
 
 **Response:**
+
 ```json
 {
   "message": "Threat deleted successfully"
@@ -138,9 +146,11 @@ Delete a threat intelligence record.
 Get threat intelligence analytics and statistics.
 
 **Query Parameters:**
+
 - `days` (int): Number of days to include in statistics (default: 30)
 
 **Response:**
+
 ```json
 {
   "total_threats": 150,
@@ -175,10 +185,12 @@ Get threat intelligence analytics and statistics.
 Upload and analyze a CSV file containing threat intelligence data.
 
 **Request:**
+
 - Content-Type: `multipart/form-data`
 - File: CSV file with a `text` column
 
 **Response:**
+
 - Content-Type: `application/json`
 - File: JSON file with analysis results
 
@@ -189,9 +201,11 @@ Upload and analyze a CSV file containing threat intelligence data.
 Get the latest ingested threat intelligence feed.
 
 **Query Parameters:**
+
 - `limit` (int): Maximum number of entries to return (default: 20)
 
 **Response:**
+
 ```json
 [
   {
@@ -210,6 +224,7 @@ Get the latest ingested threat intelligence feed.
 Manually trigger the data ingestion process.
 
 **Response:**
+
 ```json
 {
   "status": "success",
@@ -295,10 +310,12 @@ Serve the web dashboard interface.
 ## Rate Limiting
 
 Default rate limits:
+
 - 60 requests per minute per IP address
 - 1000 requests per hour per IP address
 
 Headers included in responses:
+
 - `X-RateLimit-Limit`: Request limit per window
 - `X-RateLimit-Remaining`: Requests remaining in current window
 - `X-RateLimit-Reset`: Time when the window resets
@@ -331,18 +348,18 @@ print(f"Found {threats['count']} threats")
 ### JavaScript/Node.js Example
 
 ```javascript
-const axios = require('axios');
+const axios = require("axios");
 
-const baseURL = 'http://localhost:8000';
+const baseURL = "http://localhost:8000";
 
 // Analyze text
 async function analyzeText(text) {
   try {
     const response = await axios.post(`${baseURL}/analyze`, { text });
-    console.log('Analysis result:', response.data);
+    console.log("Analysis result:", response.data);
     return response.data;
   } catch (error) {
-    console.error('Error:', error.response.data);
+    console.error("Error:", error.response.data);
   }
 }
 
@@ -350,10 +367,10 @@ async function analyzeText(text) {
 async function getAnalytics() {
   try {
     const response = await axios.get(`${baseURL}/analytics?days=7`);
-    console.log('Analytics:', response.data);
+    console.log("Analytics:", response.data);
     return response.data;
   } catch (error) {
-    console.error('Error:', error.response.data);
+    console.error("Error:", error.response.data);
   }
 }
 ```
@@ -392,6 +409,7 @@ Future versions will support webhooks for real-time notifications:
 ## API Versioning
 
 The API uses URL versioning. Future versions will be available at:
+
 - `/v2/analyze`
 - `/v2/threats`
 
@@ -399,4 +417,4 @@ Current version remains at the root level for backward compatibility.
 
 ---
 
-*For more information, visit the interactive API documentation at `/docs` when the server is running.*
+_For more information, visit the interactive API documentation at `/docs` when the server is running._
