@@ -281,20 +281,35 @@
 
     <div class="container-fluid main-content">
       <!-- System Status Banner -->
-      <div id="systemStatusBanner" class="alert alert-dismissible fade show" style="display: none;" role="alert">
+      <div
+        id="systemStatusBanner"
+        class="alert alert-dismissible fade show"
+        style="display: none"
+        role="alert"
+      >
         <div class="d-flex align-items-center">
           <i id="bannerIcon" class="bi bi-exclamation-triangle-fill me-2"></i>
           <div class="flex-grow-1">
             <strong id="bannerTitle">System Notice</strong>
             <div id="bannerMessage" class="small">System message</div>
           </div>
-          <button type="button" class="btn-close" onclick="dismissBanner()"></button>
+          <button
+            type="button"
+            class="btn-close"
+            onclick="dismissBanner()"
+          ></button>
         </div>
-        <div class="mt-2" id="bannerActions" style="display: none;">
-          <button class="btn btn-sm btn-primary me-2" onclick="enableTestMode()">
+        <div class="mt-2" id="bannerActions" style="display: none">
+          <button
+            class="btn btn-sm btn-primary me-2"
+            onclick="enableTestMode()"
+          >
             <i class="bi bi-flask me-1"></i>Switch to Test Mode
           </button>
-          <button class="btn btn-sm btn-outline-secondary" onclick="retryConnection()">
+          <button
+            class="btn btn-sm btn-outline-secondary"
+            onclick="retryConnection()"
+          >
             <i class="bi bi-arrow-clockwise me-1"></i>Retry Connection
           </button>
         </div>
@@ -1075,7 +1090,7 @@
         api: true,
         database: false,
         redis: false,
-        models: false
+        models: false,
       };
 
       // Initialize dashboard
@@ -1110,24 +1125,209 @@
           });
 
           if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            const errorText = await response.text();
+            let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+
+            try {
+              const errorJson = JSON.parse(errorText);
+              errorMessage =
+                errorJson.detail || errorJson.error || errorMessage;
+            } catch (e) {
+              // Use the original error message if JSON parsing fails
+            }
+
+            throw new Error(errorMessage);
           }
 
           return await response.json();
         } catch (error) {
           console.error(`API call failed: ${endpoint}`, error);
-          showToast(`API Error: ${error.message}`, "error");
+
+          // Check if it's a database connection error
+          if (
+            error.message.includes("connection") ||
+            error.message.includes("database") ||
+            error.message.includes("psycopg2") ||
+            error.message.includes("5432") ||
+            error.message.includes("Connection refused") ||
+            error.message.includes("Internal Server Error")
+          ) {
+            handleDatabaseError(error);
+          } else {
+            showToast(`API Error: ${error.message}`, "error");
+          }
+
           throw error;
+        }
+      }
+
+      function handleDatabaseError(error) {
+        systemStatus.database = false;
+        databaseConnected = false;
+
+        showSystemBanner(
+          "Database Connection Error",
+          "PostgreSQL database is not available. You can switch to test mode to continue using the system.",
+          "warning",
+          true
+        );
+
+        updateSystemHealth({
+          status: "degraded",
+          services: { database: "disconnected", api: "running" },
+          error: error.message,
+        });
+      }
+
+      function showSystemBanner(
+        title,
+        message,
+        type = "info",
+        showActions = false
+      ) {
+        const banner = document.getElementById("systemStatusBanner");
+        if (!banner) return;
+
+        const bannerTitle = document.getElementById("bannerTitle");
+        const bannerMessage = document.getElementById("bannerMessage");
+        const bannerIcon = document.getElementById("bannerIcon");
+        const bannerActions = document.getElementById("bannerActions");
+
+        // Set banner style based on type
+        banner.className = `alert alert-${type} alert-dismissible fade show`;
+
+        // Set icon based on type
+        const iconMap = {
+          warning: "bi-exclamation-triangle-fill",
+          danger: "bi-x-circle-fill",
+          info: "bi-info-circle-fill",
+          success: "bi-check-circle-fill",
+        };
+        bannerIcon.className = `bi ${
+          iconMap[type] || "bi-info-circle-fill"
+        } me-2`;
+
+        bannerTitle.textContent = title;
+        bannerMessage.textContent = message;
+        if (bannerActions)
+          bannerActions.style.display = showActions ? "block" : "none";
+        banner.style.display = "block";
+      }
+
+      function dismissBanner() {
+        const banner = document.getElementById("systemStatusBanner");
+        if (banner) banner.style.display = "none";
+      }
+
+      async function enableTestMode() {
+        isTestMode = true;
+
+        // Set test mode in backend by adding TEST_MODE parameter
+        showSystemBanner(
+          "Test Mode Enabled",
+          "The system is now running in test mode. All ML models work, but data is not persisted to database.",
+          "info",
+          false
+        );
+
+        // Update system status
+        systemStatus.database = false;
+        databaseConnected = false;
+
+        // Refresh the dashboard in test mode
+        setTimeout(async () => {
+          dismissBanner();
+          showToast(
+            "Test mode enabled - system will work without database",
+            "success"
+          );
+          await initializeDashboard();
+        }, 2000);
+      }
+
+      async function retryConnection() {
+        showToast("Retrying database connection...", "info");
+
+        try {
+          const healthData = await apiCall("/health");
+          if (
+            healthData.status === "healthy" &&
+            healthData.services?.database === "connected"
+          ) {
+            systemStatus.database = true;
+            databaseConnected = true;
+            isTestMode = false;
+
+            dismissBanner();
+            showToast("Database connection restored!", "success");
+            await initializeDashboard();
+          } else {
+            showToast("Database still unavailable - try test mode", "warning");
+          }
+        } catch (error) {
+          showToast("Database connection still unavailable", "warning");
         }
       }
 
       // Overview Functions
       async function refreshOverview() {
         try {
-          const [healthData, analyticsData] = await Promise.all([
-            apiCall("/health"),
-            apiCall("/analytics?days=30"),
-          ]);
+          // Try health check first
+          let healthData;
+          try {
+            healthData = await apiCall("/health");
+            systemStatus.api = true;
+
+            // Check if database is connected
+            if (healthData.services?.database === "connected") {
+              systemStatus.database = true;
+              databaseConnected = true;
+            } else {
+              systemStatus.database = false;
+              databaseConnected = false;
+            }
+          } catch (error) {
+            // If health check fails, create a basic health status
+            systemStatus.api = false;
+            healthData = {
+              status: "unhealthy",
+              services: { api: "error", database: "disconnected" },
+              error: error.message,
+            };
+          }
+
+          // Try analytics if database is connected or in test mode
+          let analyticsData = {};
+          if (databaseConnected || isTestMode) {
+            try {
+              analyticsData = await apiCall("/analytics?days=30");
+            } catch (error) {
+              // Use mock data for analytics if database is not available
+              analyticsData = {
+                total_threats: 0,
+                threats_today: 0,
+                threats_by_severity: {
+                  Critical: 0,
+                  High: 0,
+                  Medium: 0,
+                  Low: 0,
+                },
+                threats_by_source: { Twitter: 0, DarkWeb: 0, MITRE: 0 },
+                threats_by_category: {},
+                threats_timeline: [],
+              };
+            }
+          } else {
+            // Use mock data when database is not available
+            analyticsData = {
+              total_threats: 0,
+              threats_today: 0,
+              threats_by_severity: { Critical: 0, High: 0, Medium: 0, Low: 0 },
+              threats_by_source: { Twitter: 0, DarkWeb: 0, MITRE: 0 },
+              threats_by_category: {},
+              threats_timeline: [],
+            };
+          }
 
           updateSystemHealth(healthData);
           updateDashboardStats(analyticsData);
@@ -1193,9 +1393,22 @@
 
       // Threat Feed Functions
       async function loadThreatFeed() {
+        const feedContainer = document.getElementById("threatFeed");
+
+        // If database is not connected and not in test mode, show appropriate message
+        if (!databaseConnected && !isTestMode) {
+          feedContainer.innerHTML = `
+            <div class="text-center p-4 text-warning">
+              <i class="bi bi-database-x d-block mb-2" style="font-size: 2rem;"></i>
+              <strong>Threat Feed Unavailable</strong><br>
+              <small class="text-muted">Requires database connection</small><br>
+              <button class="btn btn-sm btn-primary mt-2" onclick="enableTestMode()">Enable Test Mode</button>
+            </div>`;
+          return;
+        }
+
         try {
           const feedData = await apiCall("/feed?limit=10");
-          const feedContainer = document.getElementById("threatFeed");
 
           if (feedData.threats && feedData.threats.length > 0) {
             feedContainer.innerHTML = feedData.threats
@@ -1243,8 +1456,27 @@
               '<div class="text-center p-4 text-muted">No threats in feed</div>';
           }
         } catch (error) {
-          document.getElementById("threatFeed").innerHTML =
-            '<div class="text-center p-4 text-danger">Failed to load threat feed</div>';
+          if (
+            error.message.includes("connection") ||
+            error.message.includes("database") ||
+            error.message.includes("5432") ||
+            error.message.includes("Internal Server Error")
+          ) {
+            feedContainer.innerHTML = `
+              <div class="text-center p-4 text-danger">
+                <i class="bi bi-exclamation-triangle d-block mb-2" style="font-size: 2rem;"></i>
+                <strong>Database Connection Error</strong><br>
+                <small class="text-muted">Cannot load threat feed</small><br>
+                <button class="btn btn-sm btn-primary mt-2" onclick="retryConnection()">Retry Connection</button>
+              </div>`;
+          } else {
+            feedContainer.innerHTML = `
+              <div class="text-center p-4 text-danger">
+                <i class="bi bi-x-circle d-block mb-2" style="font-size: 2rem;"></i>
+                <strong>Failed to load threat feed</strong><br>
+                <small class="text-muted">${error.message}</small>
+              </div>`;
+          }
         }
       }
 
@@ -1494,6 +1726,23 @@ Entities: ${JSON.stringify(lastAnalysisData.entities, null, 2)}`;
 
       // Threats Management
       async function loadThreats() {
+        const tbody = document.getElementById("threatsTableBody");
+
+        // If database is not connected and not in test mode, show appropriate message
+        if (!databaseConnected && !isTestMode) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="7" class="text-center text-warning p-4">
+                <i class="bi bi-database-x d-block mb-2" style="font-size: 2rem;"></i>
+                <strong>Database Not Available</strong><br>
+                <small class="text-muted">Threat database requires PostgreSQL connection. Switch to test mode to continue.</small>
+              </td>
+            </tr>`;
+          document.getElementById("threatsCount").textContent =
+            "Database unavailable";
+          return;
+        }
+
         try {
           const threatType = document.getElementById("threatTypeFilter").value;
           const severity = document.getElementById("severityFilter").value;
@@ -1508,8 +1757,33 @@ Entities: ${JSON.stringify(lastAnalysisData.entities, null, 2)}`;
           displayThreats(data.threats || []);
           updateThreatsPagination(data.count || 0);
         } catch (error) {
-          document.getElementById("threatsTableBody").innerHTML =
-            '<tr><td colspan="7" class="text-center text-danger">Failed to load threats</td></tr>';
+          if (
+            error.message.includes("connection") ||
+            error.message.includes("database") ||
+            error.message.includes("5432") ||
+            error.message.includes("Internal Server Error")
+          ) {
+            tbody.innerHTML = `
+              <tr>
+                <td colspan="7" class="text-center text-danger p-4">
+                  <i class="bi bi-exclamation-triangle d-block mb-2" style="font-size: 2rem;"></i>
+                  <strong>Database Connection Error</strong><br>
+                  <small class="text-muted">Cannot connect to PostgreSQL database. Check if the database is running.</small><br>
+                  <button class="btn btn-sm btn-primary mt-2" onclick="enableTestMode()">Switch to Test Mode</button>
+                </td>
+              </tr>`;
+          } else {
+            tbody.innerHTML = `
+              <tr>
+                <td colspan="7" class="text-center text-danger p-4">
+                  <i class="bi bi-x-circle d-block mb-2" style="font-size: 2rem;"></i>
+                  <strong>Failed to Load Threats</strong><br>
+                  <small class="text-muted">${error.message}</small>
+                </td>
+              </tr>`;
+          }
+          document.getElementById("threatsCount").textContent =
+            "Error loading threats";
         }
       }
 
