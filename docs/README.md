@@ -2,6 +2,18 @@
 
 Welcome to the CTI-NLP System documentation! This organized structure makes it easy to find the information you need.
 
+## **🚀 Start Here for Team Members**
+
+### **New to the Project?**
+- **[PROJECT_OVERVIEW.md](./PROJECT_OVERVIEW.md)** - Complete project understanding for team members
+- **[TEAM_QUICK_REFERENCE.md](./TEAM_QUICK_REFERENCE.md)** - Essential commands and quick reference
+
+### **Need Quick Help?**
+- **[USER_MANUAL.md](./01-getting-started/USER_MANUAL.md)** - Step-by-step setup guide
+- **[API.md](./01-getting-started/API.md)** - API endpoints and usage
+
+---
+
 ## **Documentation Structure**
 
 ### **[01-getting-started/](./01-getting-started/)**
@@ -17,7 +29,7 @@ _System design and component overview_
 
 - **[1. SCRIPTS_OVERVIEW.md](./02-architecture/1.%20SCRIPTS_OVERVIEW.md)** - Overview of all scripts and their purposes
 - **[5. BACKEND_OVERVIEW.md](./02-architecture/5.%20BACKEND_OVERVIEW.md)** - Backend architecture and design
-- **[AI.md](./02-architecture/AI.md)** - AI/ML architecture overview
+- **[AI-ML-ARCHITECTURE.md](./02-architecture/AI-ML-ARCHITECTURE.md)** - AI/ML architecture and model details
 
 ### **[03-models/](./03-models/)**
 
