@@ -19,6 +19,8 @@ python-dotenv
 requests
 deep-translator
 langdetect
+matplotlib
+seaborn
 
 # Database
 psycopg2-binary

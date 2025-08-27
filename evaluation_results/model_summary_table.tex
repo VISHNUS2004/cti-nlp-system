@@ -1,0 +1,15 @@
+\begin{tabular}{lllllllll}
+\toprule
+Model & Best_Vectorizer & Accuracy & F1_Score & Precision & Recall & AUC & Training_Time & Task \\
+\midrule
+SGD & Count & 0.395 & 0.289 & 0.170 & 0.267 & 0.000 & 0.009s & Severity Prediction \\
+Naive_Bayes & Count & 0.364 & 0.265 & 0.149 & 0.250 & 0.494 & 0.001s & Severity Prediction \\
+Logistic_Regression & TF-IDF & 0.423 & 0.251 & 0.106 & 0.250 & 0.492 & 0.007s & Severity Prediction \\
+Random_Forest & TF-IDF & 0.423 & 0.251 & 0.106 & 0.250 & 0.494 & 0.073s & Severity Prediction \\
+Gradient_Boosting & TF-IDF & 0.423 & 0.251 & 0.106 & 0.250 & 0.492 & 0.187s & Severity Prediction \\
+SVM & TF-IDF & 0.423 & 0.251 & 0.106 & 0.250 & 0.488 & 0.071s & Severity Prediction \\
+Neural_Network & TF-IDF & 0.423 & 0.251 & 0.106 & 0.250 & 0.492 & 0.053s & Severity Prediction \\
+Enhanced_Ensemble & Custom_Features_TF-IDF & 0.209 & 0.174 & 0.155 & 0.214 & 0.475 & 3.371s & Threat Classification \\
+Enhanced_Severity & Custom_Features_TF-IDF & 0.200 & 0.140 & 0.154 & 0.265 & 0.492 & 3.101s & Severity Prediction \\
+\bottomrule
+\end{tabular}
