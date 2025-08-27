@@ -18,6 +18,20 @@ from backend.threat_ner import extract_threat_entities
 from backend.classifier import classify_threat
 from backend.severity_predictor import predict_severity
 
+# Enhanced analyzer import
+try:
+    from backend.simple_enhanced_analyzer import (
+        analyze_threat_comprehensive, 
+        get_model_info,
+        initialize_analyzer
+    )
+    ENHANCED_ANALYZER_AVAILABLE = True
+    # Initialize the enhanced analyzer
+    initialize_analyzer()
+except ImportError as e:
+    logger.warning(f"Enhanced analyzer not available: {e}")
+    ENHANCED_ANALYZER_AVAILABLE = False
+
 # Database imports
 from database.database import get_db_session, get_redis_client, get_database_config
 from database.services import ThreatIntelService, EntityService, AnalyticsService

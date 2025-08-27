@@ -53,7 +53,7 @@ class EnhancedThreatAnalyzer:
         # Always load simple models as fallback
         self._load_simple_models()
         
-        print("✅ Threat analysis models loaded successfully")
+        print("Threat analysis models loaded successfully")
     
     def _load_advanced_models(self):
         """Load advanced models if available"""
