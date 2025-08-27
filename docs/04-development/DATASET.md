@@ -14,13 +14,13 @@
 
 ### 1. `Cybersecurity_Dataset.csv`
 
-| **Contains**               | ✅ Yes / No |
-| -------------------------- | ----------- |
-| Cleaned Threat Description | ✅ Yes      |
-| Threat Category / Type     | ✅ Yes      |
-| Severity Score / Level     | ✅ Yes      |
-| Named Entities             | ✅ Yes      |
-| Suggested Defenses         | ✅ Yes      |
+| **Contains**               | Yes / No |
+| -------------------------- | -------- |
+| Cleaned Threat Description | Yes      |
+| Threat Category / Type     | Yes      |
+| Severity Score / Level     | Yes      |
+| Named Entities             | Yes      |
+| Suggested Defenses         | Yes      |
 
 **Use for:**
 
@@ -32,11 +32,11 @@
 
 ### 2. `Cyber-Threat-Intelligence-Custom-Data_new_processed.csv`
 
-| **Contains**            | ✅ Yes / No |
-| ----------------------- | ----------- |
-| Raw threat reports      | ✅ Yes      |
-| Manual annotations      | ✅ Yes      |
-| Entity labels/positions | ✅ Yes      |
+| **Contains**            | Yes / No |
+| ----------------------- | -------- |
+| Raw threat reports      | Yes      |
+| Manual annotations      | Yes      |
+| Entity labels/positions | Yes      |
 
 **Use for:**
 
@@ -47,10 +47,10 @@
 
 ### 3. `cyber-threat-intelligence_all.csv`
 
-| **Contains**       | ✅ Yes / No |
-| ------------------ | ----------- |
-| Raw reports        | ✅ Yes      |
-| Annotated Entities | ✅ Yes      |
+| **Contains**       | Yes / No |
+| ------------------ | -------- |
+| Raw reports        | Yes      |
+| Annotated Entities | Yes      |
 
 **Use for:**
 
@@ -67,10 +67,10 @@ Note: We probably don’t need this as we are using the pre-split versions below
 
 ### 6. `cyber-threat-intelligence-splited_test.csv`
 
-| **Contains**    | ✅ Yes / No                  |
-| --------------- | ---------------------------- |
-| Raw threat text | ✅ Yes                       |
-| Entity labels   | ✅ Yes (partial in test/val) |
+| **Contains**    | Yes / No                  |
+| --------------- | ------------------------- |
+| Raw threat text | Yes                       |
+| Entity labels   | Yes (partial in test/val) |
 
 **Use for:**
 

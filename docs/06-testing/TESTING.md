@@ -37,7 +37,7 @@ from backend.main import app
 from fastapi.testclient import TestClient
 client = TestClient(app)
 response = client.post('/analyze', json={'text': 'APT29 phishing campaign'})
-print('API Working!' if response.status_code == 200 else '❌ API Failed!')
+print('API Working!' if response.status_code == 200 else 'API Failed!')
 print('Response:', response.json() if response.status_code == 200 else response.text)
 "
 ```

@@ -34,52 +34,52 @@ Your CTI-NLP system has been significantly improved with enhanced models and bet
 
 ```python
 # File: scripts/train_improved_models.py - ImprovedThreatClassifier
-✅ Ensemble voting (Logistic Regression + Random Forest)
-✅ Enhanced TF-IDF (n-grams, better parameters)
-✅ Custom cybersecurity features
-✅ Confidence scoring
-✅ Individual model predictions tracking
+- Ensemble voting (Logistic Regression + Random Forest)
+- Enhanced TF-IDF (n-grams, better parameters)
+- Custom cybersecurity features
+- Confidence scoring
+- Individual model predictions tracking
 ```
 
 ### 2. **Advanced Severity Prediction**
 
 ```python
 # File: scripts/train_improved_models.py - ImprovedSeverityPredictor
-✅ 4-level severity mapping (Low, Medium, High, Critical)
-✅ Custom feature extraction (threat keywords, technical indicators)
-✅ Improved Random Forest (300 estimators, better parameters)
-✅ Cross-validation scoring
-✅ Detailed confidence analysis
+- 4-level severity mapping (Low, Medium, High, Critical)
+- Custom feature extraction (threat keywords, technical indicators)
+- Improved Random Forest (300 estimators, better parameters)
+- Cross-validation scoring
+- Detailed confidence analysis
 ```
 
 ### 3. **Cybersecurity-Specific Entity Extraction**
 
 ```python
 # File: scripts/train_improved_models.py - SimpleEntityExtractor
-✅ IP Address detection
-✅ CVE reference extraction
-✅ Hash detection (MD5, SHA1, SHA256)
-✅ URL and domain extraction
-✅ Email pattern matching
-✅ Threat keyword identification
-✅ Risk scoring (0-100 scale)
+- IP Address detection
+- CVE reference extraction
+- Hash detection (MD5, SHA1, SHA256)
+- URL and domain extraction
+- Email pattern matching
+- Threat keyword identification
+- Risk scoring (0-100 scale)
 ```
 
 ### 4. **Comprehensive Analysis Integration**
 
 ```python
 # File: backend/simple_enhanced_analyzer.py
-✅ Multi-model ensemble analysis
-✅ Overall risk scoring
-✅ Unified recommendations
-✅ Fallback mechanisms
-✅ Model status tracking
-✅ Backwards compatibility
+- Multi-model ensemble analysis
+- Overall risk scoring
+- Unified recommendations
+- Fallback mechanisms
+- Model status tracking
+- Backwards compatibility
 ```
 
 ---
 
-## 📈 Performance Improvements
+## Performance Improvements
 
 ### **Entity Extraction Enhancement**
 
@@ -122,7 +122,7 @@ Your CTI-NLP system has been significantly improved with enhanced models and bet
 
 ---
 
-## 🔧 Files Created/Enhanced
+## Files Created/Enhanced
 
 ### **New Training Scripts**
 
@@ -167,7 +167,7 @@ Output:
 
 ---
 
-## 🚀 Next Steps & Recommendations
+## Next Steps & Recommendations
 
 ### **Immediate Actions (Ready to Use)**
 
@@ -199,7 +199,7 @@ Output:
 
 ---
 
-## 💡 Why These Models Are Better
+## Why These Models Are Better
 
 ### **1. Domain-Specific Focus**
 
@@ -227,7 +227,7 @@ Output:
 
 ---
 
-## 🏆 Summary
+## Summary
 
 Your CTI-NLP system now has:
 

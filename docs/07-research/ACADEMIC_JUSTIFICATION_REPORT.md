@@ -41,17 +41,17 @@
 
 | Rank | Model               | Vectorizer | Accuracy  | F1-Score  | AUC   | Time (s) |
 | ---- | ------------------- | ---------- | --------- | --------- | ----- | -------- |
-| 🥇 1 | **SGD**             | **Count**  | **25.9%** | **0.214** | 0.000 | **0.01** |
-| 🥈 2 | SGD                 | TF-IDF     | 25.9%     | 0.202     | 0.000 | 0.01     |
-| 🥉 3 | Logistic Regression | TF-IDF     | 24.1%     | 0.201     | 0.471 | 0.02     |
+| 1    | **SGD**             | **Count**  | **25.9%** | **0.214** | 0.000 | **0.01** |
+| 2    | SGD                 | TF-IDF     | 25.9%     | 0.202     | 0.000 | 0.01     |
+| 3    | Logistic Regression | TF-IDF     | 24.1%     | 0.201     | 0.471 | 0.02     |
 
 ### **Task 2: Severity Prediction**
 
 | Rank | Model       | Vectorizer | Accuracy  | F1-Score  | AUC   | Time (s) |
 | ---- | ----------- | ---------- | --------- | --------- | ----- | -------- |
-| 🥇 1 | **SGD**     | **Count**  | **39.5%** | **0.289** | 0.000 | **0.01** |
-| 🥈 2 | SGD         | TF-IDF     | 34.5%     | 0.276     | 0.000 | 0.01     |
-| 🥉 3 | Naive Bayes | Count      | 36.4%     | 0.265     | 0.494 | 0.001    |
+| 1    | **SGD**     | **Count**  | **39.5%** | **0.289** | 0.000 | **0.01** |
+| 2    | SGD         | TF-IDF     | 34.5%     | 0.276     | 0.000 | 0.01     |
+| 3    | Naive Bayes | Count      | 36.4%     | 0.265     | 0.494 | 0.001    |
 
 ---
 
@@ -85,7 +85,7 @@
 
 ---
 
-## 🔍 Why Enhanced Models Underperformed
+## Why Enhanced Models Underperformed
 
 ### **Analysis of Results**
 
@@ -111,7 +111,7 @@ The enhanced ensemble models showed lower performance (-13% to -45% F1-score dro
 
 ---
 
-## 🏆 Final Model Recommendation
+## Final Model Recommendation
 
 ### **Selected Model Architecture**
 
@@ -155,7 +155,7 @@ SGD Classifier + Count Vectorizer
 
 ---
 
-## 📋 Detailed Performance Metrics
+## Detailed Performance Metrics
 
 ### **Confusion Matrix Analysis (Threat Classification)**
 
@@ -182,7 +182,7 @@ DDoS            12       14        16        13
 
 ---
 
-## 🔬 Alternative Model Considerations
+## Alternative Model Considerations
 
 ### **Models Considered but Rejected**
 
@@ -206,7 +206,7 @@ DDoS            12       14        16        13
 
 ---
 
-## 💡 Recommendations for Future Work
+## Recommendations for Future Work
 
 ### **Model Improvement Strategies**
 
@@ -224,7 +224,7 @@ DDoS            12       14        16        13
 
 ---
 
-## 📝 Conclusion for Academic Review
+## Conclusion for Academic Review
 
 ### **Model Selection Summary**
 

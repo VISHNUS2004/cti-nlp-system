@@ -4,13 +4,13 @@
 
 ---
 
-## 🎯 **Executive Summary for Academic Guide**
+## **Executive Summary for Academic Guide**
 
 **Bottom Line**: After testing **22 different model combinations** across **6 evaluation metrics**, the **SGD Classifier with Count Vectorizer** emerged as the optimal choice for our CTI-NLP system.
 
 ---
 
-## 📊 **Empirical Evidence (Key Numbers)**
+## **Empirical Evidence (Key Numbers)**
 
 ### **Performance Metrics**
 
@@ -30,13 +30,13 @@
 
 ---
 
-## 🔬 **Why These Models Were Chosen: Scientific Justification**
+## **Why These Models Were Chosen: Scientific Justification**
 
 ### **1. Empirical Performance**
 
 ```
-🏆 SGD Classifier ranked #1 out of 9 model types tested
-📊 Outperformed 8 other algorithms including:
+SGD Classifier ranked #1 out of 9 model types tested
+Outperformed 8 other algorithms including:
    • Random Forest: +2.8% F1-score improvement
    • Neural Networks: +3.8% F1-score improvement
    • SVM: +3.8% F1-score improvement
@@ -57,23 +57,23 @@
 
 ---
 
-## 📈 **Comprehensive Model Comparison Results**
+## **Comprehensive Model Comparison Results**
 
 ### **All 22 Model Combinations Tested**
 
-| Rank     | Model               | Vectorizer | F1-Score  | Accuracy  | Time (s)  | AUC   |
-| -------- | ------------------- | ---------- | --------- | --------- | --------- | ----- |
-| 🥇 **1** | **SGD**             | **Count**  | **0.289** | **0.395** | **0.009** | 0.000 |
-| 🥈 2     | SGD                 | TF-IDF     | 0.276     | 0.345     | 0.007     | 0.000 |
-| 🥉 3     | Naive Bayes         | Count      | 0.265     | 0.364     | 0.001     | 0.494 |
-| 4        | Logistic Regression | TF-IDF     | 0.251     | 0.423     | 0.007     | 0.492 |
-| 5        | Random Forest       | TF-IDF     | 0.251     | 0.423     | 0.073     | 0.494 |
-| ...      | ...                 | ...        | ...       | ...       | ...       | ...   |
-| 22       | Enhanced Severity   | Custom     | 0.140     | 0.200     | 3.101     | 0.492 |
+| Rank  | Model               | Vectorizer | F1-Score  | Accuracy  | Time (s)  | AUC   |
+| ----- | ------------------- | ---------- | --------- | --------- | --------- | ----- |
+| **1** | **SGD**             | **Count**  | **0.289** | **0.395** | **0.009** | 0.000 |
+| 2     | SGD                 | TF-IDF     | 0.276     | 0.345     | 0.007     | 0.000 |
+| 3     | Naive Bayes         | Count      | 0.265     | 0.364     | 0.001     | 0.494 |
+| 4     | Logistic Regression | TF-IDF     | 0.251     | 0.423     | 0.007     | 0.492 |
+| 5     | Random Forest       | TF-IDF     | 0.251     | 0.423     | 0.073     | 0.494 |
+| ...   | ...                 | ...        | ...       | ...       | ...       | ...   |
+| 22    | Enhanced Severity   | Custom     | 0.140     | 0.200     | 3.101     | 0.492 |
 
 ---
 
-## 🎓 **Academic Rigor: Methodology**
+## **Academic Rigor: Methodology**
 
 ### **Evaluation Framework**
 
@@ -101,7 +101,7 @@
 
 ---
 
-## 🔍 **Why Enhanced Models Underperformed**
+## **Why Enhanced Models Underperformed**
 
 ### **Technical Analysis**
 
@@ -122,7 +122,7 @@ The custom ensemble models showed **-13% to -45% performance drop**:
 
 ---
 
-## 📊 **Visual Evidence**
+## **Visual Evidence**
 
 Generated comprehensive charts showing:
 
@@ -135,7 +135,7 @@ _Charts saved as: `evaluation_results/model_comparison_charts.png`_
 
 ---
 
-## 💡 **Key Insights for Academic Committee**
+## **Key Insights for Academic Committee**
 
 ### **1. Methodology Excellence**
 
@@ -160,7 +160,7 @@ _Charts saved as: `evaluation_results/model_comparison_charts.png`_
 
 ---
 
-## 🏆 **Final Recommendation**
+## **Final Recommendation**
 
 ### **Selected Model Architecture**
 
@@ -182,15 +182,15 @@ CTI-NLP Classification Pipeline:
 
 ---
 
-## 📚 **Supporting Materials**
+## **Supporting Materials**
 
 ### **Generated Files for Review**
 
-1. **📊 Detailed Results**: `evaluation_results/all_models_comparison.csv`
-2. **📈 Visualizations**: `evaluation_results/model_comparison_charts.png/pdf`
-3. **📋 Summary Table**: `evaluation_results/model_summary_table.csv`
-4. **📄 LaTeX Table**: `evaluation_results/model_summary_table.tex`
-5. **📝 Academic Report**: `docs/ACADEMIC_JUSTIFICATION_REPORT.md`
+1. **Detailed Results**: `evaluation_results/all_models_comparison.csv`
+2. **Visualizations**: `evaluation_results/model_comparison_charts.png/pdf`
+3. **Summary Table**: `evaluation_results/model_summary_table.csv`
+4. **LaTeX Table**: `evaluation_results/model_summary_table.tex`
+5. **Academic Report**: `docs/ACADEMIC_JUSTIFICATION_REPORT.md`
 
 ### **For Thesis/Paper Inclusion**
 
@@ -201,7 +201,7 @@ CTI-NLP Classification Pipeline:
 
 ---
 
-## 🎯 **Key Points for Guide Presentation**
+## **Key Points for Guide Presentation**
 
 ### **Opening Statement**
 

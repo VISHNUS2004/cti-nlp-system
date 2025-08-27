@@ -45,7 +45,7 @@ sanjanb: is the approac correct for this project
 
 GitHub Copilot: I'll analyze the project structure and approach to give you a comprehensive assessment. Let me examine the key files to understand the architecture and implementation. Based on my comprehensive analysis of your CTI-NLP system, here's my assessment of whether the approach is correct:
 
-## **Overall Assessment: The approach is SOLID and well-structured** ✅
+## **Overall Assessment: The approach is SOLID and well-structured**
 
 ### **What's Working Well:**
 
