@@ -179,6 +179,46 @@ async def ingest_now():
         })
 
 
+@app.get("/models/info")
+async def get_model_information():
+    """Get information about loaded models and their capabilities"""
+    try:
+        if ENHANCED_ANALYZER_AVAILABLE:
+            model_info = get_model_info()
+            model_info["enhanced_analyzer"] = True
+            model_info["capabilities"] = {
+                "improved_classification": model_info.get("improved_classifier", False),
+                "improved_severity": model_info.get("improved_severity", False),
+                "cybersecurity_entities": model_info.get("entity_extractor", False),
+                "comprehensive_analysis": True,
+                "risk_scoring": True
+            }
+        else:
+            model_info = {
+                "enhanced_analyzer": False,
+                "capabilities": {
+                    "basic_classification": True,
+                    "basic_severity": True,
+                    "basic_entities": True,
+                    "comprehensive_analysis": False,
+                    "risk_scoring": False
+                }
+            }
+        
+        return {
+            "status": "success",
+            "model_info": model_info,
+            "recommendations": [
+                "Enhanced models provide better accuracy and more detailed analysis",
+                "Consider training improved models for production use",
+                "Use comprehensive analysis endpoint for detailed threat assessment"
+            ]
+        }
+        
+    except Exception as e:
+        logger.error(f"Failed to get model info: {e}")
+        return JSONResponse(status_code=500, content={"error": str(e)})
+
 # -------------------
 # Dashboard
 # -------------------
@@ -187,7 +227,7 @@ def serve_dashboard(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 # -------------------
-# Analyze text endpoint with database storage
+# Analyze text endpoint with enhanced analysis and database storage
 # -------------------
 @app.post("/analyze")
 async def analyze_text(payload: dict, db: Session = Depends(get_db_session)):
@@ -196,16 +236,78 @@ async def analyze_text(payload: dict, db: Session = Depends(get_db_session)):
         return JSONResponse(status_code=400, content={"error": "No input text provided."})
 
     try:
-        # Perform ML analysis
+        # Check if we're in test mode (no database)
+        test_mode = os.getenv("TEST_MODE", "false").lower() == "true"
+        
+        # Try enhanced analysis first, fallback to original
+        if ENHANCED_ANALYZER_AVAILABLE:
+            try:
+                enhanced_result = analyze_threat_comprehensive(text)
+                
+                # Extract data for backwards compatibility
+                entities = enhanced_result['entities']['entities']
+                threat_type = enhanced_result['classification']['prediction']
+                severity = enhanced_result['severity']['severity']
+                
+                if test_mode:
+                    return {
+                        "id": "test-mode-id",
+                        "original_text": text,
+                        "entities": entities,
+                        "threat_type": str(threat_type),
+                        "severity": str(severity),
+                        "timestamp": datetime.utcnow().isoformat(),
+                        "test_mode": True,
+                        "enhanced_analysis": enhanced_result,
+                        "model_info": get_model_info()
+                    }
+                
+                # Store enhanced results in database
+                threat_intel_service = ThreatIntelService(db)
+                
+                threat_intel = threat_intel_service.create_threat_intel(
+                    source=DataSource.MANUAL,
+                    original_text=text,
+                    threat_type=ThreatCategory(threat_type) if threat_type in [e.value for e in ThreatCategory] else None,
+                    severity=SeverityLevel(severity) if severity in [e.value for e in SeverityLevel] else None,
+                    confidence_score=enhanced_result['classification'].get('confidence', 0.85)
+                )
+
+                # Store entities with enhanced information
+                if entities:
+                    entity_service = EntityService(db)
+                    entity_list = []
+                    for entity_type, entity_values in entities.items():
+                        for value in entity_values:
+                            entity_list.append({
+                                "entity_type": entity_type,
+                                "entity_value": value,
+                                "confidence_score": 0.8
+                            })
+                    
+                    if entity_list:
+                        entity_service.create_entities(str(threat_intel.id), entity_list)
+
+                return {
+                    "id": str(threat_intel.id),
+                    "original_text": text,
+                    "entities": entities,
+                    "threat_type": str(threat_type),
+                    "severity": str(severity),
+                    "timestamp": threat_intel.created_at.isoformat(),
+                    "enhanced_analysis": enhanced_result,
+                    "model_info": get_model_info()
+                }
+                
+            except Exception as e:
+                logger.warning(f"Enhanced analysis failed, falling back to original: {e}")
+        
+        # Original analysis (fallback)
         entities = extract_threat_entities(text)
         threat_type = classify_threat(text)
         severity = predict_severity(text)
 
-        # Check if we're in test mode (no database)
-        test_mode = os.getenv("TEST_MODE", "false").lower() == "true"
-        
         if test_mode:
-            # Return results without database storage for testing
             return {
                 "id": "test-mode-id",
                 "original_text": text,
@@ -213,13 +315,13 @@ async def analyze_text(payload: dict, db: Session = Depends(get_db_session)):
                 "threat_type": str(threat_type),
                 "severity": str(severity),
                 "timestamp": datetime.utcnow().isoformat(),
-                "test_mode": True
+                "test_mode": True,
+                "analysis_type": "original"
             }
 
         # Store in database (production mode)
         threat_intel_service = ThreatIntelService(db)
         
-        # Create threat intelligence record
         threat_intel = threat_intel_service.create_threat_intel(
             source=DataSource.MANUAL,
             original_text=text,
@@ -249,7 +351,8 @@ async def analyze_text(payload: dict, db: Session = Depends(get_db_session)):
             "entities": entities,
             "threat_type": str(threat_type),
             "severity": str(severity),
-            "timestamp": threat_intel.created_at.isoformat()
+            "timestamp": threat_intel.created_at.isoformat(),
+            "analysis_type": "original"
         }
 
     except Exception as e:
