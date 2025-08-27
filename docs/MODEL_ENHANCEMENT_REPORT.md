@@ -2,7 +2,7 @@
 
 ## Model Assessment & Improvements
 
-### Current Status: **ENHANCED** 
+### Current Status: **ENHANCED**
 
 Your CTI-NLP system has been significantly improved with enhanced models and better analysis capabilities.
 
