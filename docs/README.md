@@ -34,21 +34,21 @@ _Machine learning models and algorithms_
 
 _Development guides and data information_
 
-- **[98. DATASET.md](./04-development/98.%20DATASET.md)** - Dataset description and preprocessing
+- **[DATASET.md](./04-development/DATASET.md)** - Dataset description and preprocessing
 
 ### **[05-deployment/](./05-deployment/)**
 
 _Production deployment and operations_
 
 - **[DEPLOYMENT.md](./05-deployment/DEPLOYMENT.md)** - Complete deployment guide
-- **[95. REAL TIME INGESTION MODULE.md](./05-deployment/95.%20REAL%20TIME%20INGESTION%20MODULE.md)** - Real-time data ingestion setup
+- **[INGESTION MODULE.md](./05-deployment/INGESTION%20MODULE.md)** - Real-time data ingestion setup
 
 ### **[06-testing/](./06-testing/)**
 
 _Testing procedures and validation_
 
 - **[TESTING.md](./06-testing/TESTING.md)** - Testing framework and procedures
-- **[99. TEST_GUIDE.md](./06-testing/99.%20TEST_GUIDE.md)** - Step-by-step testing guide
+- **[TEST_GUIDE.md](./06-testing/TEST_GUIDE.md)** - Step-by-step testing guide
 
 ### **[07-research/](./07-research/)**
 
@@ -72,13 +72,13 @@ _Project planning and roadmaps_
 
 1. **[USER_MANUAL.md](./01-getting-started/USER_MANUAL.md)** - Complete setup guide
 2. **[5. BACKEND_OVERVIEW.md](./02-architecture/5.%20BACKEND_OVERVIEW.md)** - Understand the system
-3. **[99. TEST_GUIDE.md](./06-testing/99.%20TEST_GUIDE.md)** - Test your installation
+3. **[TEST_GUIDE.md](./06-testing/TEST_GUIDE.md)** - Test your installation
 
 ### **Developers** → Key Files:
 
 1. **[1. SCRIPTS_OVERVIEW.md](./02-architecture/1.%20SCRIPTS_OVERVIEW.md)** - Code structure
 2. **[API.md](./01-getting-started/API.md)** - API documentation
-3. **[98. DATASET.md](./04-development/98.%20DATASET.md)** - Data handling
+3. **[DATASET.md](./04-development/DATASET.md)** - Data handling
 
 ### **Researchers** → Academic Materials:
 
@@ -89,7 +89,7 @@ _Project planning and roadmaps_
 ### **DevOps/Deployment** → Production Ready:
 
 1. **[DEPLOYMENT.md](./05-deployment/DEPLOYMENT.md)** - Deploy to production
-2. **[95. REAL TIME INGESTION MODULE.md](./05-deployment/95.%20REAL%20TIME%20INGESTION%20MODULE.md)** - Real-time features
+2. **[INGESTION MODULE.md](./05-deployment/INGESTION%20MODULE.md)** - Real-time features
 3. **[TESTING.md](./06-testing/TESTING.md)** - Production testing
 
 ---

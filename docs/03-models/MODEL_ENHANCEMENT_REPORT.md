@@ -14,17 +14,19 @@ Your CTI-NLP system has been significantly improved with enhanced models and bet
 
 | Component                 | Model                        | Accuracy | Features                       |
 | ------------------------- | ---------------------------- | -------- | ------------------------------ |
-| **Threat Classification** | TF-IDF + Logistic Regression | ~28%     | Basic text features            |
-| **Severity Prediction**   | Random Forest                | ~22%     | Simple severity mapping        |
+| **Threat Classification** | TF-IDF + Logistic Regression | ~24%     | Basic text features            |
+| **Severity Prediction**   | Random Forest                | ~36%     | Simple severity mapping        |
 | **Entity Extraction**     | dslim/bert-base-NER          | Limited  | General NER, no cyber entities |
 
-### **After (Enhanced Models)**
+### **After (Optimized Models)**
 
-| Component                 | Model                                               | Accuracy | Features                                    |
-| ------------------------- | --------------------------------------------------- | -------- | ------------------------------------------- |
-| **Threat Classification** | Ensemble (TF-IDF + Random Forest + Custom Features) | ~28-35%  | Enhanced features, ensemble voting          |
-| **Severity Prediction**   | Improved Random Forest + Custom Features            | ~22-30%  | Granular mapping, cyber-specific features   |
-| **Entity Extraction**     | Regex + Pattern Matching                            | 80%+     | Cyber-specific entities (IPs, CVEs, hashes) |
+| Component                 | Model                              | Accuracy | Features                                    |
+| ------------------------- | ---------------------------------- | -------- | ------------------------------------------- |
+| **Threat Classification** | SGD + Count Vectorizer (optimized) | ~26%     | Optimized vectorization, efficient training |
+| **Severity Prediction**   | SGD + Count Vectorizer (optimized) | ~40%     | Fast training, robust performance           |
+| **Entity Extraction**     | Regex + Pattern Matching           | 80%+     | Cyber-specific entities (IPs, CVEs, hashes) |
+
+**Note:** Enhanced ensemble models actually showed lower performance due to dataset size limitations. Simple, optimized models performed better on this specific dataset.
 
 ---
 
