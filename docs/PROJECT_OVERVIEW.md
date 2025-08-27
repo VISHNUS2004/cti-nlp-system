@@ -35,6 +35,7 @@ CTI-NLP (Cyber Threat Intelligence - Natural Language Processing) is an automate
 ## System Components Explained
 
 ### 1. **Data Ingestion Layer**
+
 - **Location**: `data_ingestion/`
 - **Purpose**: Fetches threat data from multiple sources
 - **Components**:
@@ -44,6 +45,7 @@ CTI-NLP (Cyber Threat Intelligence - Natural Language Processing) is an automate
   - `preprocess.py` - Cleans and normalizes collected data
 
 ### 2. **Machine Learning Pipeline**
+
 - **Location**: `scripts/` and `models/`
 - **Purpose**: Trains and deploys ML models for threat analysis
 - **Key Models**:
@@ -56,6 +58,7 @@ CTI-NLP (Cyber Threat Intelligence - Natural Language Processing) is an automate
   - `comprehensive_model_evaluation.py` - Tests 22 model combinations
 
 ### 3. **Backend API System**
+
 - **Location**: `backend/`
 - **Purpose**: Serves ML models via REST API
 - **Framework**: FastAPI (modern, fast Python web framework)
@@ -67,12 +70,14 @@ CTI-NLP (Cyber Threat Intelligence - Natural Language Processing) is an automate
   - `simple_enhanced_analyzer.py` - Comprehensive analysis engine
 
 ### 4. **Database Layer**
+
 - **Primary DB**: PostgreSQL for persistent data storage
 - **Cache**: Redis for performance optimization
 - **Location**: `database/` (configuration and models)
 - **Stores**: Threat intelligence records, analysis results, user data
 
 ### 5. **Testing Infrastructure**
+
 - **Location**: `tests/`
 - **Framework**: pytest with comprehensive coverage
 - **Components**:
@@ -82,6 +87,7 @@ CTI-NLP (Cyber Threat Intelligence - Natural Language Processing) is an automate
   - `run_tests.py` - Test execution script
 
 ### 6. **Deployment & Operations**
+
 - **Containerization**: Docker with docker-compose
 - **Web Server**: Nginx for production
 - **Environment**: Python virtual environment with 100+ packages
@@ -94,11 +100,13 @@ CTI-NLP (Cyber Threat Intelligence - Natural Language Processing) is an automate
 ### Input → Processing → Output
 
 1. **Data Input**:
+
    ```
    Raw Text: "APT29 phishing campaign targeting government agencies with spear-phishing emails"
    ```
 
 2. **Processing Pipeline**:
+
    ```
    Text Cleaning → Vectorization → ML Models → Analysis Engine
    ```
@@ -135,6 +143,7 @@ CTI-NLP (Cyber Threat Intelligence - Natural Language Processing) is an automate
 ### **For New Developers**
 
 1. **Setup** (30 minutes):
+
    ```bash
    git clone <repo>
    cd cti-nlp-system
@@ -144,6 +153,7 @@ CTI-NLP (Cyber Threat Intelligence - Natural Language Processing) is an automate
    ```
 
 2. **Run Basic Tests**:
+
    ```bash
    python scripts/train_threat_classifier.py
    python scripts/train_severity_model.py
@@ -158,6 +168,7 @@ CTI-NLP (Cyber Threat Intelligence - Natural Language Processing) is an automate
 ### **For Data Scientists**
 
 1. **Model Training**:
+
    - Use `scripts/train_improved_models.py` for enhanced models
    - Run `scripts/comprehensive_model_evaluation.py` for evaluation
    - Check `docs/07-research/` for academic justification
@@ -170,6 +181,7 @@ CTI-NLP (Cyber Threat Intelligence - Natural Language Processing) is an automate
 ### **For DevOps/Deployment**
 
 1. **Container Deployment**:
+
    ```bash
    docker-compose up -d
    ```
@@ -182,6 +194,7 @@ CTI-NLP (Cyber Threat Intelligence - Natural Language Processing) is an automate
 ### **For QA/Testing**
 
 1. **Run All Tests**:
+
    ```bash
    pytest tests/ -v --cov
    ```
@@ -196,6 +209,7 @@ CTI-NLP (Cyber Threat Intelligence - Natural Language Processing) is an automate
 ## Key Performance Metrics
 
 ### **Current System Performance**:
+
 - **Threat Classification**: 26% accuracy (SGD + Count Vectorizer)
 - **Severity Prediction**: 40% accuracy (SGD + Count Vectorizer)
 - **Entity Extraction**: 80%+ accuracy for cyber-specific entities
@@ -203,6 +217,7 @@ CTI-NLP (Cyber Threat Intelligence - Natural Language Processing) is an automate
 - **Training Time**: < 0.01 seconds for optimized models
 
 ### **Why These Metrics?**:
+
 - Low accuracy is due to challenging cybersecurity classification task
 - Simple models outperform complex ensembles on this dataset
 - Fast training enables rapid iteration and deployment
@@ -235,6 +250,7 @@ cti-nlp-system/
 ## Getting Help
 
 ### **Documentation Paths**:
+
 - **New to project**: `docs/01-getting-started/USER_MANUAL.md`
 - **API usage**: `docs/01-getting-started/API.md`
 - **Architecture**: `docs/02-architecture/`
@@ -244,6 +260,7 @@ cti-nlp-system/
 - **Research**: `docs/07-research/`
 
 ### **Common Issues**:
+
 - **Import errors**: Check virtual environment activation
 - **Model missing**: Run training scripts first
 - **Database errors**: Ensure PostgreSQL/Redis are running

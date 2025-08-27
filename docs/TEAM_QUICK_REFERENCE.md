@@ -7,6 +7,7 @@
 ## Quick Setup Commands
 
 ### **Initial Setup**
+
 ```bash
 # Clone and setup
 git clone <repo-url>
@@ -24,6 +25,7 @@ python scripts/train_severity_model.py
 ```
 
 ### **Daily Development**
+
 ```bash
 # Activate environment
 myenv\Scripts\activate
@@ -43,23 +45,27 @@ python backend/main.py
 ## Key File Locations
 
 ### **🔧 Development**
+
 - **API Server**: `backend/main.py`
 - **Model Training**: `scripts/train_*.py`
 - **Tests**: `tests/`
 - **Requirements**: `requirements.txt`
 
 ### **📊 Data & Models**
-- **Trained Models**: `models/` (*.pkl files)
-- **Datasets**: `data/` (*.csv files)
+
+- **Trained Models**: `models/` (\*.pkl files)
+- **Datasets**: `data/` (\*.csv files)
 - **Processed Data**: `data/ner_prepared/`
 
 ### **📚 Documentation**
+
 - **Getting Started**: `docs/01-getting-started/USER_MANUAL.md`
 - **API Reference**: `docs/01-getting-started/API.md`
 - **Architecture**: `docs/02-architecture/`
 - **Testing Guide**: `docs/06-testing/TEST_GUIDE.md`
 
 ### **🚀 Deployment**
+
 - **Docker**: `docker-compose.yml`
 - **Deployment Guide**: `docs/05-deployment/DEPLOYMENT.md`
 - **Environment Config**: `.env.example`
@@ -71,12 +77,14 @@ python backend/main.py
 ### **Base URL**: `http://localhost:8000`
 
 ### **Main Endpoints**:
+
 - `GET /health` - System health check
 - `POST /analyze` - Analyze threat text
 - `GET /docs` - Interactive API documentation
 - `GET /dashboard` - Web interface
 
 ### **Test Command**:
+
 ```bash
 curl -X POST "http://localhost:8000/analyze" \
   -H "Content-Type: application/json" \
@@ -88,6 +96,7 @@ curl -X POST "http://localhost:8000/analyze" \
 ## Common Tasks
 
 ### **🧪 Testing**
+
 ```bash
 # Run all tests
 pytest tests/ -v
@@ -100,6 +109,7 @@ pytest tests/ --cov
 ```
 
 ### **🤖 Model Training**
+
 ```bash
 # Basic models
 python scripts/train_threat_classifier.py
@@ -113,6 +123,7 @@ python scripts/comprehensive_model_evaluation.py
 ```
 
 ### **📊 Data Processing**
+
 ```bash
 # Prepare NER data
 python scripts/prepare_ner_data.py
@@ -125,6 +136,7 @@ python scripts/preprocess.py
 ```
 
 ### **🚀 Deployment**
+
 ```bash
 # Local Docker deployment
 docker-compose up -d
@@ -141,12 +153,14 @@ docker-compose logs -f
 ## Project Statistics
 
 ### **📈 Performance**
+
 - **Threat Classification**: 26% accuracy
 - **Severity Prediction**: 40% accuracy
 - **API Response Time**: <100ms
 - **Model Training**: <0.01s
 
 ### **📦 Codebase**
+
 - **Python Files**: 50+ scripts
 - **Documentation**: 20+ markdown files
 - **Models**: 13 trained model files
@@ -154,6 +168,7 @@ docker-compose logs -f
 - **Dependencies**: 100+ Python packages
 
 ### **🏗️ Architecture**
+
 - **Backend**: FastAPI + Python
 - **Database**: PostgreSQL + Redis
 - **ML Stack**: scikit-learn + transformers
@@ -165,21 +180,25 @@ docker-compose logs -f
 ## Team Roles & Responsibilities
 
 ### **👨‍💻 Developers**
+
 - **Focus**: Backend API, model integration
 - **Key Files**: `backend/`, `scripts/`
 - **Documentation**: `docs/02-architecture/`
 
 ### **🔬 Data Scientists**
+
 - **Focus**: Model training, evaluation, research
 - **Key Files**: `scripts/`, `models/`, `data/`
 - **Documentation**: `docs/03-models/`, `docs/07-research/`
 
 ### **🧪 QA/Testers**
+
 - **Focus**: Testing, validation, documentation
 - **Key Files**: `tests/`, `docs/06-testing/`
 - **Tools**: pytest, manual testing guides
 
 ### **🚀 DevOps**
+
 - **Focus**: Deployment, infrastructure, monitoring
 - **Key Files**: `docker-compose.yml`, `nginx/`
 - **Documentation**: `docs/05-deployment/`
@@ -203,6 +222,7 @@ docker-compose logs -f
 **Solution**: Check `docs/06-testing/TESTING.md`
 
 ### **📖 Key Documentation**
+
 1. **New Team Member**: Start with `docs/PROJECT_OVERVIEW.md`
 2. **Setup Issues**: Check `docs/01-getting-started/USER_MANUAL.md`
 3. **API Problems**: See `docs/01-getting-started/API.md`
@@ -210,6 +230,7 @@ docker-compose logs -f
 5. **Deployment Issues**: Read `docs/05-deployment/DEPLOYMENT.md`
 
 ### **🔗 External Resources**
+
 - **FastAPI Docs**: https://fastapi.tiangolo.com/
 - **scikit-learn Docs**: https://scikit-learn.org/
 - **Docker Docs**: https://docs.docker.com/
@@ -227,4 +248,4 @@ docker-compose logs -f
 
 ---
 
-**💡 Tip**: Bookmark this file and the main `PROJECT_OVERVIEW.md` for quick reference!**
+**💡 Tip**: Bookmark this file and the main `PROJECT_OVERVIEW.md` for quick reference!\*\*

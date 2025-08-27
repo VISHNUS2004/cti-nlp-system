@@ -29,12 +29,14 @@ Text Input → Preprocessing → Vectorization → ML Models → Analysis Engine
 **Purpose**: Classify threats into categories (Phishing, Malware, APT, etc.)
 
 **Architecture**:
+
 - **Algorithm**: Stochastic Gradient Descent (SGD)
 - **Vectorization**: Count Vectorizer (max_features=5000)
 - **Performance**: 26% accuracy, 0.214 F1-score
 - **Training Time**: <0.01 seconds
 
 **Why SGD?**:
+
 - Best performance among 22 tested combinations
 - Extremely fast training and prediction
 - Handles high-dimensional sparse text data well
@@ -45,12 +47,14 @@ Text Input → Preprocessing → Vectorization → ML Models → Analysis Engine
 **Purpose**: Predict threat severity (Low, Medium, High, Critical)
 
 **Architecture**:
+
 - **Algorithm**: Stochastic Gradient Descent (SGD)
 - **Vectorization**: Count Vectorizer (max_features=5000)
 - **Performance**: 40% accuracy, 0.289 F1-score
 - **Training Time**: <0.01 seconds
 
 **Severity Mapping**:
+
 - Score 1-2: Low
 - Score 3: Medium
 - Score 4-5: High
@@ -60,11 +64,13 @@ Text Input → Preprocessing → Vectorization → ML Models → Analysis Engine
 **Purpose**: Extract cybersecurity-specific entities
 
 **Architecture**:
+
 - **Primary**: Regex-based pattern matching
 - **Fallback**: BERT-based NER (dslim/bert-base-NER)
 - **Performance**: 80%+ accuracy for cyber entities
 
 **Extracted Entities**:
+
 - IP addresses
 - CVE references
 - Hash values (MD5, SHA1, SHA256)
@@ -81,6 +87,7 @@ Text Input → Preprocessing → Vectorization → ML Models → Analysis Engine
 After comprehensive evaluation of 22 model combinations, simple models consistently outperformed complex ensembles:
 
 **Simple Models (SGD + Count Vectorizer)**:
+
 - 26% accuracy (threat classification)
 - 40% accuracy (severity prediction)
 - <0.01s training time
@@ -88,6 +95,7 @@ After comprehensive evaluation of 22 model combinations, simple models consisten
 - Robust generalization
 
 **Complex Ensembles (Custom Features + Multiple Models)**:
+
 - 13-45% performance drop
 - 300x slower training
 - Higher memory requirements
@@ -107,6 +115,7 @@ After comprehensive evaluation of 22 model combinations, simple models consisten
 ### Text Vectorization
 
 **Count Vectorizer Configuration**:
+
 ```python
 CountVectorizer(
     max_features=5000,
@@ -117,6 +126,7 @@ CountVectorizer(
 ```
 
 **Why Count Vectorizer over TF-IDF?**:
+
 - Better performance on this specific dataset
 - Preserves importance of repeated threat terms
 - Faster computation
@@ -125,6 +135,7 @@ CountVectorizer(
 ### Cybersecurity-Specific Features
 
 **Regex Patterns for Entity Extraction**:
+
 - **IP Address**: `\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b`
 - **CVE**: `CVE-\d{4}-\d{4,}`
 - **MD5**: `\b[a-fA-F0-9]{32}\b`

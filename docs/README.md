@@ -5,10 +5,12 @@ Welcome to the CTI-NLP System documentation! This organized structure makes it e
 ## **🚀 Start Here for Team Members**
 
 ### **New to the Project?**
+
 - **[PROJECT_OVERVIEW.md](./PROJECT_OVERVIEW.md)** - Complete project understanding for team members
 - **[TEAM_QUICK_REFERENCE.md](./TEAM_QUICK_REFERENCE.md)** - Essential commands and quick reference
 
 ### **Need Quick Help?**
+
 - **[USER_MANUAL.md](./01-getting-started/USER_MANUAL.md)** - Step-by-step setup guide
 - **[API.md](./01-getting-started/API.md)** - API endpoints and usage
 
